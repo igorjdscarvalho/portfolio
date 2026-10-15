@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-# Depois de publicar, descomente e coloque o seu domínio:
-# Sitemap: https://SEU-DOMINIO.com/sitemap.xml
