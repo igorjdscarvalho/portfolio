@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Página não encontrada | Igor Carvalho</title>
+<meta name="robots" content="noindex">
+<style>
+html{visibility:hidden}
+:root{color-scheme:light dark}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4f3ef;color:#121212;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;padding:24px}
+@media(prefers-color-scheme:dark){body{background:#141413;color:#f1efe8}}
+b{display:block;font:500 13px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;color:#CA271C;margin-bottom:16px}
+h1{font-size:clamp(40px,10vw,110px);font-weight:500;letter-spacing:-.035em;line-height:.98;margin:0 0 24px}
+a{display:inline-block;background:#121212;color:#fff;padding:14px 22px;text-decoration:none;font:500 13px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;text-transform:uppercase}
+@media(prefers-color-scheme:dark){a{background:#f1efe8;color:#111}}
+</style>
+</head>
+<body>
+<main><b>404</b><h1>Essa página<br>não existe.</h1><a id="home" href="./">Voltar ao início →</a></main>
+<script>
+/* Serve para o GitHub Pages abrir endereços limpos digitados direto, como /portfolio/sobre.
+   Se o site ficar na raiz de um domínio ou em um repositório "usuario.github.io", descomente a linha abaixo: */
+// window.SITE_BASE = '/';
+(function () {
+  var SEC = ['sobre', 'servicos', 'projetos', 'processo', 'newsletter', 'contato'], p = location.pathname;
+  var base = window.SITE_BASE || (/github\.io$/.test(location.hostname) ? '/' + p.split('/')[1] + '/' : '/');
+  var rest = (p.indexOf(base) === 0 ? p.slice(base.length) : p.slice(1)).replace(/\/+$/, '');
+  document.getElementById('home').href = base;
+  if (SEC.indexOf(rest) > -1) { location.replace(base + '?go=' + rest); return; }          // /sobre -> home rolando até Sobre
+  var m = rest.match(/^projetos\/([a-z0-9-]+)$/);
+  if (m) { location.replace(base + 'projetos/' + m[1] + '.html' + location.search + location.hash); return; }  // sem .html -> com .html
+  document.documentElement.style.visibility = 'visible';
+})();
+</script>
+</body>
+</html>
