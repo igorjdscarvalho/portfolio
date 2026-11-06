@@ -1,0 +1,25 @@
+@property --p{syntax:"<number>";inherits:false;initial-value:0}
+.next{padding:24px 0 50px}
+.next .sc{position:relative;top:auto;margin-bottom:0}
+.next .lab{margin-bottom:28px}
+.pinch-hint{display:none}
+/* ---------- 3. capas dos projetos (touch) ---------- */
+@media (hover:none),(pointer:coarse){
+ .sc{touch-action:pan-y;--g:clamp(0,calc((var(--p) - .5) * 2),1);--a:clamp(0,calc(var(--p) * 2),1);
+   transition:--p .55s cubic-bezier(.2,.9,.2,1),color .35s}
+ .sc.pinching{transition:color .35s}
+ .sc[data-cover] .cv{display:block;position:absolute;z-index:0;pointer-events:none;background-position:center;background-size:cover;background-repeat:no-repeat;
+   top:calc(17% * (1 - var(--g)));right:calc(18% * (1 - var(--g)));bottom:calc(27% * (1 - var(--g)));left:calc(18% * (1 - var(--g)));
+   opacity:var(--a);transform:scale(calc(.7 + .3 * var(--a))) rotate(calc(-4deg * (1 - var(--g))));
+   border-radius:calc(2px * (1 - var(--g)));box-shadow:0 20px 40px rgba(0,0,0,calc(.35 * (1 - var(--g))))}
+ .sc[data-cover] .cv::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.75));opacity:var(--g)}
+ .sc[data-cover] .big{transition:opacity .35s}
+ .sc.full{color:#fff}
+ .sc.full .big{opacity:0}
+ .sc.full .btn{background:#fff;color:#111}
+}
+
+
+/* transição ao abrir um projeto: painel sobe de baixo */
+.pt-out{position:fixed;inset:0;z-index:9998;background:#0d0d0c;clip-path:inset(100% 0 0 0);transition:clip-path .42s cubic-bezier(.76,0,.24,1);pointer-events:none}
+.pt-out.on{clip-path:inset(0 0 0 0)}

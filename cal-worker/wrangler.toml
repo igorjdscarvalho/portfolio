@@ -1,0 +1,7 @@
+name = "igor-cal-booking"
+main = "src/index.js"
+compatibility_date = "2026-11-06"
+
+[vars]
+CAL_EVENT_TYPE_ID = "7806199"
+ALLOWED_ORIGIN = "https://igorjdscarvalho.github.io"
