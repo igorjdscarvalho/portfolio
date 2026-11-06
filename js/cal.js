@@ -48,7 +48,7 @@
     loading: false, error: false,
     day: null, slot: null,
     step: 'pick',         /* pick | form | done */
-    sending: false, formError: '', done: null,
+    sending: false, formError: '', done: null, rescheduleOffer: null, formEmail: '', wasRescheduled: false,
     event: null, eventError: '',
     cache: {}
   };
@@ -98,6 +98,9 @@
       .then(function (res) {
         S.sending = false;
         if (res.ok) { S.step = 'done'; S.done = { email: attendee.email }; S.cache = {}; render(); return; }
+        if (res.status === 409 && res.j && res.j.code === 'ACTIVE_BOOKING_EXISTS' && res.j.existingBooking) {
+          S.rescheduleOffer = res.j.existingBooking; S.formError = ''; render(); return;
+        }
         if (res.status === 409 || res.status === 400) {
           S.formError = 'Esse horário acabou de ser ocupado ou algum campo precisa ser revisto. Confira os dados e escolha novamente.';
           S.cache = {}; S.step = 'pick'; S.slot = null; loadMonth(); return;
@@ -105,6 +108,22 @@
         S.formError = 'Não consegui concluir o agendamento. Tente de novo ou use o link direto.'; render();
       })
       .catch(function () { S.sending = false; S.formError = 'Sem conexão com o agendamento. Tente de novo ou use o link direto.'; render(); });
+  }
+
+  function rescheduleBooking() {
+    if (!S.rescheduleOffer || S.sending) return;
+    S.sending = true; S.formError = ''; render();
+    fetch(CFG.workerApi.replace(/\/$/, '') + '/bookings/' + encodeURIComponent(S.rescheduleOffer.uid) + '/reschedule', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: S.formEmail, start: new Date(S.slot).toISOString() })
+    })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }, function () { return { ok: r.ok, status: r.status, j: null }; }); })
+      .then(function (res) {
+        S.sending = false;
+        if (res.ok) { S.rescheduleOffer = null; S.wasRescheduled = true; S.step = 'done'; S.done = { email: S.formEmail }; S.cache = {}; render(); return; }
+        S.formError = 'Não foi possível reagendar essa reserva. Ela pode ter sido alterada ou cancelada. Atualize os horários e tente novamente.'; render();
+      })
+      .catch(function () { S.sending = false; S.formError = 'Sem conexão com o Cal.com. Tente novamente.'; render(); });
   }
 
   /* ---------- formatação ---------- */
@@ -349,6 +368,7 @@
       }
       addGuest(guestListInput.value || guestInput.value);
       if (attendee.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(attendee.email)) { err.textContent = T('Preencha seu nome e um e-mail válido.'); return; }
+      S.formEmail = attendee.email;
       submitBooking(attendee, responses, guestList);
     } }, [
       h('div', { class: 'cal-sum mono' }, [
@@ -357,17 +377,22 @@
         h('span', { class: 'cal-mut', text: CFG.minutes + ' min · ' + CFG.place })
       ]),
       ].concat(identityControls, [guests], phoneControls, otherControls, [err,
-      h('button', { type: 'submit', class: 'btn a', disabled: S.sending, text: S.sending ? 'Agendando…' : 'Confirmar agendamento →' })
+      S.rescheduleOffer ? h('div', { class: 'cal-reschedule-offer' }, [
+        h('p', { text: 'Você já tem uma reserva para este evento em ' + new Intl.DateTimeFormat(loc(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: S.hour12, timeZone: S.tz }).format(new Date(S.rescheduleOffer.start)) + '. Deseja reagendar para o horário selecionado?' }),
+        h('button', { type: 'button', class: 'btn a', disabled: S.sending, text: S.sending ? 'Reagendando…' : 'Sim, reagendar →', onclick: rescheduleBooking }),
+        h('button', { type: 'button', class: 'cal-keep-booking', disabled: S.sending, text: 'Manter agendamento atual', onclick: function () { S.rescheduleOffer = null; S.formError = ''; S.step = 'pick'; S.day = null; S.slot = null; render(); } })
+      ]) : null,
+      S.rescheduleOffer ? null : h('button', { type: 'submit', class: 'btn a', disabled: S.sending, text: S.sending ? 'Agendando…' : 'Confirmar agendamento →' })
     ]));
     return form;
   }
 
   function doneView() {
     return h('div', { class: 'cal-ok' }, [
-      h('div', { class: 'mono cal-okt', text: '✓ Agendado' }),
+      h('div', { class: 'mono cal-okt', text: S.wasRescheduled ? '✓ Reagendado' : '✓ Agendado' }),
       h('p', { class: 'cal-okd', text: fmtDayLong(S.day) + ' · ' + fmtTime(S.slot) }),
       h('p', { class: 'cal-mut', text: T('Enviamos a confirmação com o link do Google Meet para') + ' ' + S.done.email + '.' }),
-      h('button', { type: 'button', class: 'cal-link mono', text: 'Agendar outro horário', onclick: function () { S.step = 'pick'; S.day = null; S.slot = null; S.done = null; loadMonth(); } })
+      h('button', { type: 'button', class: 'cal-link mono', text: S.wasRescheduled ? 'Voltar ao calendário' : 'Agendar outro horário', onclick: function () { S.step = 'pick'; S.day = null; S.slot = null; S.done = null; S.wasRescheduled = false; loadMonth(); } })
     ]);
   }
 
