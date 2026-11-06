@@ -16,7 +16,7 @@
     bookV: '2026-02-25',
     api: 'https://api.cal.com/v2',
     monthsAhead: 3,
-    workerApi: 'https://igor-cal-booking.igorjdscarvalho.workers.dev' /* Troque pela URL publicada do Cloudflare Worker. */
+    workerApi: 'https://igor-cal-booking.igorjdscarvalho.workers.dev' /* Endpoint publicado no Cloudflare. */
   };
 
   /* ---------- utilidades ---------- */
@@ -150,7 +150,7 @@
       h('span', { class: 'cal-sr', text: 'Fuso horário' }),
       h('button', { type: 'button', class: 'cal-tool', 'aria-label': 'Selecionar fuso horário', text: '◷', onclick: function () { sel.focus(); sel.click(); } }), sel
     ]);
-    var clock = h('button', { type: 'button', class: 'cal-tool', 'aria-label': 'Alternar formato de hora', title: S.hour12 ? 'Usar formato 24 horas' : 'Usar formato 12 horas', text: S.hour12 ? '12h' : '24h', onclick: function () {
+    var clock = h('button', { type: 'button', class: 'cal-tool', 'aria-label': 'Alternar formato de hora', title: S.hour12 ? 'Usar formato 24 horas' : 'Usar formato 12 horas', text: S.hour12 ? '24h' : '12h', onclick: function () {
       var form = host.querySelector('.cal-f'), values = [], checked = [];
       if (form) {
         Array.prototype.forEach.call(form.querySelectorAll('input:not([type=checkbox]), textarea'), function (el) { values.push(el.value); });
@@ -239,12 +239,21 @@
   }
   function isRequired(f) { return f.required === true || f.required === 'true' || f.isRequired === true; }
   function isMulti(f) { var t = fieldType(f); return t.indexOf('checkbox') >= 0 || t.indexOf('multiselect') >= 0 || t.indexOf('multi-select') >= 0; }
+  function kindOfField(f) {
+    var k = String(fieldKey(f)).toLowerCase(), nativeField = String(f.field || '').toLowerCase(), type = fieldType(f);
+    if (nativeField === 'name' || k === 'name' || type === 'fullname') return 'name';
+    if (nativeField === 'email' || k === 'email') return 'email';
+    if (k.indexOf('phone') >= 0 || nativeField.indexOf('phone') >= 0 || type.indexOf('phone') >= 0) return 'phone';
+    return 'other';
+  }
+  function isInternalField(f) {
+    var k = String(fieldKey(f)).toLowerCase(), n = String(f.field || '').toLowerCase();
+    return ['location','notes','reschedulereason','guests'].indexOf(k) >= 0 || ['location','notes','reschedulereason','guests'].indexOf(n) >= 0;
+  }
   function renderField(f, responseEls) {
-    var k = fieldKey(f), type = fieldType(f), options = fieldOptions(f), label = f.label || f.name || k;
-    var nativeField = String(f.field || '').toLowerCase(), req = isRequired(f);
-    var core = nativeField === 'name' || k === 'name' || nativeField === 'fullName' || type === 'fullname';
-    var email = nativeField === 'email' || k === 'email';
-    var phone = nativeField === 'phone' || nativeField === 'phoneNumber' || k === 'phone' || k === 'phoneNumber' || type.indexOf('phone') >= 0;
+    var k = fieldKey(f), type = fieldType(f), options = fieldOptions(f), kind = kindOfField(f);
+    var label = kind === 'name' ? 'Seu nome' : (kind === 'email' ? 'Seu e-mail' : (kind === 'phone' ? 'Telefone' : (f.label || f.name || k)));
+    var req = isRequired(f), core = kind === 'name', email = kind === 'email', phone = kind === 'phone';
     var ctrl, wrapper;
     if (isMulti(f) && options.length) {
       ctrl = h('fieldset', { class: 'cal-service-field cal-dynamic-multi', 'data-response-key': k, 'data-required': req });
@@ -290,19 +299,33 @@
       h('p', { class: 'cal-msg mono', text: S.eventError || 'Carregando os campos configurados no Cal.com…' }),
       S.eventError ? h('a', { class: 'cal-link mono', href: CFG.fallback, target: '_blank', rel: 'noopener', text: 'Abrir agenda Cal.com ↗' }) : null
     ]);
-    var controls = fields.filter(function (f) { return !f.hidden && !f.isHidden; }).map(function (f) { return renderField(f, responseEls); });
-    var guestList = [], guestInput = h('input', { type: 'email', autocomplete: 'email', placeholder: 'email@exemplo.com' });
-    var guestListInput = h('textarea', { rows: '2', placeholder: 'Ou cole uma lista separada por vírgulas ou linhas' });
+    var visibleFields = fields.filter(function (f) { return !f.hidden && !f.isHidden && !isInternalField(f); });
+    visibleFields.sort(function (a, b) { var order = { name: 0, email: 1, phone: 2, other: 3 }; return order[kindOfField(a)] - order[kindOfField(b)]; });
+    var identityFields = visibleFields.filter(function (f) { var k = kindOfField(f); return k === 'name' || k === 'email'; });
+    var phoneFields = visibleFields.filter(function (f) { return kindOfField(f) === 'phone'; });
+    var otherFields = visibleFields.filter(function (f) { return kindOfField(f) === 'other'; });
+    var identityControls = identityFields.map(function (f) { return renderField(f, responseEls); });
+    var phoneControls = phoneFields.map(function (f) { return renderField(f, responseEls); });
+    var otherControls = otherFields.map(function (f) { return renderField(f, responseEls); });
+    var guestList = [], guestInput = h('input', { type: 'email', autocomplete: 'email', placeholder: 'nome@exemplo.com' });
+    var guestListInput = h('textarea', { rows: '3', placeholder: 'Cole os e-mails separados por vírgulas ou linhas' });
     var guestTags = h('div', { class: 'cal-guest-tags' });
+    var singleGuestPanel = h('div', { class: 'cal-guest-panel', hidden: true }, [guestInput, h('button', { type: 'button', class: 'cal-guest-add-btn', text: 'Adicionar', onclick: function () { addGuest(guestInput.value); } })]);
+    var listGuestPanel = h('div', { class: 'cal-guest-panel', hidden: true }, [guestListInput, h('button', { type: 'button', class: 'cal-guest-add-btn cal-guest-list-btn', text: 'Adicionar lista', onclick: function () { addGuest(guestListInput.value); } })]);
     var addGuest = function (raw) {
       var values = raw.split(/[\s,;]+/).map(function (x) { return x.trim(); }).filter(Boolean);
       values.forEach(function (v) { if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) && guestList.indexOf(v) < 0) guestList.push(v); });
       guestInput.value = ''; guestListInput.value = ''; guestTags.replaceChildren.apply(guestTags, guestList.map(function (v) { return h('button', { type: 'button', class: 'cal-guest-tag', text: v + ' ×', 'aria-label': 'Remover ' + v, onclick: function () { guestList = guestList.filter(function (x) { return x !== v; }); addGuest(''); } }); }));
     };
-    var guests = S.event.allowGuests ? h('fieldset', { class: 'cal-service-field cal-guests' }, [
-      h('legend', { text: 'Participantes adicionais (opcional)' }),
-      h('div', { class: 'cal-guest-add' }, [guestInput, h('button', { type: 'button', class: 'cal-guest-add-btn', text: '+', 'aria-label': 'Adicionar participante', onclick: function () { addGuest(guestInput.value); } })]),
-      guestTags, guestListInput
+    var guestOptions;
+    var guests = S.event.allowGuests ? h('div', { class: 'cal-guest-block' }, [
+      h('button', { type: 'button', class: 'cal-add-guests', text: '＋ Adicionar participantes', onclick: function () { guestOptions.hidden = !guestOptions.hidden; } }),
+      guestOptions = h('div', { class: 'cal-guest-options', hidden: true }, [
+        h('div', { class: 'cal-guest-modes' }, [
+          h('button', { type: 'button', class: 'cal-guest-mode', text: 'Adicionar um e-mail', onclick: function () { singleGuestPanel.hidden = false; listGuestPanel.hidden = true; } }),
+          h('button', { type: 'button', class: 'cal-guest-mode', text: 'Adicionar uma lista', onclick: function () { listGuestPanel.hidden = false; singleGuestPanel.hidden = true; } })
+        ]), singleGuestPanel, listGuestPanel, guestTags
+      ])
     ]) : null;
     var err = h('p', { class: 'cal-err', role: 'alert', text: S.formError ? T(S.formError) : '' });
     var form = h('form', { class: 'cal-f', novalidate: true, onsubmit: function (e) {
@@ -333,7 +356,7 @@
         h('span', { text: fmtDayShort(S.day) + ' · ' + fmtTime(S.slot) }),
         h('span', { class: 'cal-mut', text: CFG.minutes + ' min · ' + CFG.place })
       ]),
-      ].concat(controls, [guests, err,
+      ].concat(identityControls, [guests], phoneControls, otherControls, [err,
       h('button', { type: 'submit', class: 'btn a', disabled: S.sending, text: S.sending ? 'Agendando…' : 'Confirmar agendamento →' })
     ]));
     return form;
