@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /projetos/_modelo.html
-Disallow: /projetos/_modelo-instagram.html
-
-Sitemap: https://igorjdscarvalho.github.io/portfolio/sitemap.xml
