@@ -1,0 +1,3154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LopesArq — Arquitetura e Interiores de Alto Padrão</title>
+<meta name="description" content="Projetos residenciais e corporativos exclusivos, unindo design sofisticado, previsibilidade orçamentária e acompanhamento completo do conceito à entrega.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  
+  /* Paleta cromática arquitetônica com contraste refinado */
+  --bg: #faf8f5;
+  --surface: #f2ece1;
+  --surface-hover: #eae1d1;
+  --surface-card: #ffffff;
+  --border: #e0d7c4;
+  --border-focus: #26433c;
+  
+  --ink: #161817;
+  --ink-muted: #565f5b;
+  --ink-light: #7c8681;
+  
+  --accent: #26433c;            /* Verde musgo arquitetônico */
+  --accent-light: #375d54;
+  --accent-badge-bg: #d7e6e0;   /* Fundo do eyebrow com cor bem definida e perceptível */
+  --accent-badge-text: #16362f;
+  --accent-badge-border: #9ec2b6;
+  --accent-hover: #152924;
+  --on-accent: #ffffff;
+  
+  --gold: #b89758;              /* Dourado bronze */
+  --gold-badge-bg: #f4ebd8;
+  --gold-badge-text: #6b511f;
+  --gold-badge-border: #d6be8e;
+  --sand: #dfd5bc;
+  
+  --deep-panel: #142824;
+  --deep-panel-gradient: linear-gradient(150deg, #19342e 0%, #0d1a17 100%);
+  --footer-bg: #090e0d;         /* Rodapé escuro elegante com separação nítida */
+  
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  
+  /* Largura total aumentada ligeiramente para mais respiro e elegância */
+  --container: 1260px;
+  --gutter: 28px;
+  --section-y: 84px;
+  
+  --shadow-sm: 0 2px 8px rgba(22, 24, 23, 0.04);
+  --shadow-md: 0 10px 28px rgba(22, 24, 23, 0.08);
+  --shadow-lg: 0 20px 45px rgba(22, 24, 23, 0.12);
+  --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-sans);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+img,svg{max-width:100%;display:block}
+
+/* Prevenção de palavras viúvas em títulos */
+h1,h2,h3,h4{
+  margin:0;
+  color:var(--ink);
+  line-height:1.2;
+  letter-spacing:-0.025em;
+  font-weight:700;
+  text-wrap:balance;
+}
+h1{font-size:clamp(2.3rem, 4.8vw, 3.8rem);font-weight:700}
+h2{font-size:clamp(1.85rem, 3.4vw, 2.6rem);font-weight:700}
+h3{font-size:1.22rem;font-weight:600}
+p{margin:0;text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--radius-xs)}
+
+.container{max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.section{padding:var(--section-y) 0;position:relative}
+.section.alt{background:var(--surface)}
+.section.white{background:#ffffff}
+
+/* Section Headings com alinhamento rigoroso */
+.section-head{
+  max-width:700px;
+  margin-bottom:46px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+}
+.section-head p{margin-top:14px;color:var(--ink-muted);font-size:1.08rem;line-height:1.6}
+.section-head.center{
+  margin-inline:auto;
+  align-items:center;
+  text-align:center;
+}
+
+/* Eyebrows com cor bem definida e alinhamento flush */
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--accent-badge-text);
+  background:var(--accent-badge-bg);
+  border:1px solid var(--accent-badge-border);
+  padding:6px 14px;
+  border-radius:var(--radius-full);
+  line-height:1;
+  box-shadow:0 1px 3px rgba(38,67,60,0.06);
+}
+.eb-t{display:inline}
+.nw{white-space:nowrap}
+.eyebrow::before{
+  content:"";
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--accent);
+}
+.eyebrow.gold{
+  color:var(--gold-badge-text);
+  background:var(--gold-badge-bg);
+  border-color:var(--gold-badge-border);
+}
+.eyebrow.gold::before{background:var(--gold)}
+
+/* ========================================================
+   BOTÕES AVANÇADOS COM ANIMAÇÃO DE OUTLINE DRAW & SHIMMER
+   ======================================================== */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:50px;
+  padding:0 26px;
+  border-radius:var(--radius-sm);
+  border:2px solid transparent;
+  font-family:var(--font-sans);
+  font-size:0.94rem;
+  font-weight:600;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  white-space:nowrap;
+  z-index:1;
+  transition:transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+/* Efeito Shimmer reflexivo */
+.btn::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:60%;
+  height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform:skewX(-22deg);
+  pointer-events:none;
+  transition:none;
+  z-index:2;
+}
+.btn:hover::before{
+  left:140%;
+  transition:left 0.65s ease;
+}
+
+.btn:active{transform:translateY(1px) scale(0.98)}
+.btn svg{
+  width:18px;
+  height:18px;
+  transition:transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position:relative;
+  z-index:3;
+}
+.btn:hover svg{transform:translateX(5px)}
+.btn span{position:relative;z-index:3}
+
+/* Botão Primário: Preenchido */
+.btn-primary{
+  background:var(--accent);
+  color:var(--on-accent);
+  box-shadow:0 4px 14px rgba(38,67,60,0.22);
+}
+.btn-primary:hover{
+  background:var(--accent-hover);
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px rgba(38,67,60,0.35);
+}
+
+/* Botão Secundário: Outline elegante sem ficar verde sólido no hover */
+.btn-secondary{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:transparent;
+}
+.btn-secondary:hover{
+  /* Não fica verde sólido como o primário: mantém estética de outline com preenchimento sutil translúcido */
+  background:rgba(38, 67, 60, 0.08);
+  color:var(--accent-hover);
+  border-color:var(--accent-hover);
+  transform:translateY(-3px);
+  box-shadow:0 6px 18px rgba(38,67,60,0.14);
+}
+
+.btn-sand{
+  background:var(--sand);
+  color:var(--ink);
+  border-color:var(--sand);
+  font-weight:700;
+}
+.btn-sand:hover{
+  background:#ffffff;
+  border-color:#ffffff;
+  color:var(--accent-hover);
+  transform:translateY(-3px);
+  box-shadow:0 10px 26px rgba(0,0,0,0.22);
+}
+
+.btn-whatsapp{
+  background:#25d366;
+  color:#ffffff;
+  border-color:#25d366;
+}
+.btn-whatsapp:hover{
+  background:#1eb855;
+  border-color:#1eb855;
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px rgba(37,211,102,0.35);
+}
+
+/* ========================================================
+   HEADER & MENU (Espaçamento calibrado & botões refinados)
+   ======================================================== */
+.header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(250, 248, 245, 0.92);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(226, 217, 199, 0.85);
+  transition:all 0.3s ease;
+}
+.header.scrolled{
+  background:rgba(255, 255, 255, 0.96);
+  box-shadow:0 6px 20px rgba(0,0,0,0.06);
+}
+.header .container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:72px;
+  gap:36px; /* Distância generosa entre o logo e o menu */
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:1.2rem;
+  letter-spacing:0.02em;
+  color:var(--accent);
+  font-weight:700;
+  flex:none;
+}
+.brand svg{width:32px;height:32px;color:var(--accent)}
+.brand b{color:var(--ink)}
+
+.nav{display:flex;gap:22px;align-items:center}
+.nav a.link{
+  text-decoration:none;
+  color:var(--ink-muted);
+  font-size:0.88rem; /* Tamanho ligeiramente reduzido para equilíbrio visual */
+  font-weight:500;
+  position:relative;
+  padding:5px 0;
+  transition:color 0.2s ease;
+  white-space:nowrap;
+}
+.nav a.link::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:0;
+  height:2px;
+  background:var(--accent);
+  transition:width 0.25s ease;
+  border-radius:2px;
+}
+.nav a.link:hover{color:var(--ink)}
+.nav a.link:hover::after,
+.nav a.link.active::after{width:100%}
+.nav a.link.active{color:var(--accent);font-weight:600}
+
+/* Botão de Agendar conversa no Header mais compacto */
+.header .btn{
+  min-height:40px;
+  padding:0 18px;
+  font-size:0.86rem;
+  flex:none;
+}
+
+/* Menu Mobile: Oculto no desktop */
+.menu-toggle{
+  display:none;
+  background:transparent;
+  border:none;
+  padding:8px;
+  cursor:pointer;
+  color:var(--ink);
+}
+.menu-toggle{width:44px;height:44px;border-radius:12px;display:none;place-items:center;transition:background .25s ease}
+.menu-toggle:hover,.menu-toggle[aria-expanded="true"]{background:var(--surface)}
+.burger{position:relative;display:block;width:22px;height:16px}
+.burger i{position:absolute;left:0;width:100%;height:2px;border-radius:2px;background:currentColor;transition:transform .4s cubic-bezier(0.16, 1, 0.3, 1), opacity .2s ease, top .4s cubic-bezier(0.16, 1, 0.3, 1), width .3s ease}
+.burger i:nth-child(1){top:0}
+.burger i:nth-child(2){top:7px;width:70%;left:auto;right:0}
+.burger i:nth-child(3){top:14px}
+.menu-toggle[aria-expanded="true"] .burger i:nth-child(1){top:7px;transform:rotate(45deg)}
+.menu-toggle[aria-expanded="true"] .burger i:nth-child(2){opacity:0;transform:translateX(8px)}
+.menu-toggle[aria-expanded="true"] .burger i:nth-child(3){top:7px;transform:rotate(-45deg)}
+
+.mobile-drawer{
+  display:flex;
+  position:absolute;
+  top:100%;
+  left:0;
+  width:100%;
+  background:#ffffff;
+  border-bottom:1px solid var(--border);
+  border-radius:0 0 22px 22px;
+  padding:10px 24px 22px;
+  flex-direction:column;
+  gap:0;
+  box-shadow:0 22px 40px rgba(0,0,0,0.12);
+  z-index:99;
+  visibility:hidden;
+  opacity:0;
+  transform:translateY(-14px);
+  clip-path:inset(0 0 100% 0 round 0 0 22px 22px);
+  pointer-events:none;
+  transition:opacity .3s ease, transform .45s cubic-bezier(0.16, 1, 0.3, 1), clip-path .45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear .45s;
+}
+.mobile-drawer.open{
+  visibility:visible;
+  opacity:1;
+  transform:none;
+  clip-path:inset(0 0 0 0 round 0 0 22px 22px);
+  pointer-events:auto;
+  transition:opacity .3s ease, transform .45s cubic-bezier(0.16, 1, 0.3, 1), clip-path .45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+}
+/* itens entram em cascata */
+.mobile-drawer > *{opacity:0;transform:translateY(-8px);transition:opacity .3s ease, transform .4s cubic-bezier(0.16, 1, 0.3, 1)}
+.mobile-drawer.open > *{opacity:1;transform:none}
+.mobile-drawer.open > *:nth-child(1){transition-delay:.06s}
+.mobile-drawer.open > *:nth-child(2){transition-delay:.10s}
+.mobile-drawer.open > *:nth-child(3){transition-delay:.14s}
+.mobile-drawer.open > *:nth-child(4){transition-delay:.18s}
+.mobile-drawer.open > *:nth-child(5){transition-delay:.22s}
+.mobile-drawer.open > *:nth-child(6){transition-delay:.26s}
+.mobile-drawer.open > *:nth-child(7){transition-delay:.32s}
+@media (min-width: 769px) {
+  .mobile-drawer{display:none !important}
+}
+.mobile-drawer a.mobile-link{
+  font-size:1.05rem;
+  font-weight:600;
+  color:var(--ink);
+  padding:15px 0;
+  border-bottom:1px solid var(--border);
+}
+.mobile-drawer a.btn{margin-top:18px}
+
+/* ========================================================
+   HERO SECTION & VISUAL SHOWCASE
+   ======================================================== */
+.hero{padding:60px 0 52px}
+.hero-grid{display:grid;grid-template-columns:1.08fr 0.92fr;gap:64px;align-items:center}
+.hero-content{display:flex;flex-direction:column;align-items:flex-start}
+.hero h1{color:var(--ink);margin-top:4px}
+.hero h1 span.serif{font-family:var(--font-serif);font-weight:500;font-style:italic;color:var(--accent)}
+.hero .sub{margin-top:20px;font-size:1.15rem;color:var(--ink-muted);max-width:48ch;line-height:1.6}
+
+.actions{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.microproof{
+  margin-top:24px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:18px;
+  font-size:0.88rem;
+  color:var(--ink-muted);
+}
+.microproof span{display:inline-flex;align-items:center;gap:6px}
+.microproof svg{width:16px;height:16px;color:var(--accent)}
+
+/* Visual da Hero */
+.hero-visual{position:relative}
+.showcase-card{
+  position:relative;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:0 24px 55px rgba(22, 24, 23, 0.16);
+  background:var(--surface);
+  border:1px solid rgba(255,255,255,0.85);
+  transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+.showcase-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 30px 64px rgba(22,24,23,0.22);
+}
+.showcase-card img{
+  width:100%;
+  height:440px;
+  object-fit:cover;
+  display:block;
+  transition:transform 0.7s ease, opacity 0.3s ease, filter 0.4s ease;
+}
+.showcase-card:hover img{transform:scale(1.03)}
+
+/* Pins arquitetônicos que aparecem no modo Conceito 3D */
+.blueprint-pin{
+  position:absolute;
+  z-index:6;
+  background:rgba(17, 35, 30, 0.88);
+  backdrop-filter:blur(6px);
+  border:1px solid var(--gold);
+  color:#ffffff;
+  padding:4px 10px;
+  border-radius:var(--radius-full);
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+  display:none;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  pointer-events:none;
+  animation:pinPulse 2s infinite ease-in-out;
+}
+@keyframes pinPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.04)}
+}
+.blueprint-pin.pin-1{top:28%;left:22%}
+.blueprint-pin.pin-2{top:62%;right:18%}
+.showcase-card.mode-3d-active .blueprint-pin{display:inline-flex}
+.showcase-card.mode-3d-active img{filter:contrast(115%) brightness(98%)}
+
+/* Alternador Obra Entregue vs Conceito 3D */
+.hero-mode-switch{
+  position:absolute;
+  top:16px;
+  right:16px;
+  z-index:8;
+  background:rgba(255, 255, 255, 0.94);
+  backdrop-filter:blur(10px);
+  padding:4px;
+  border-radius:var(--radius-full);
+  display:inline-flex;
+  gap:4px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.16);
+}
+.mode-btn{
+  border:none;
+  background:transparent;
+  padding:6px 14px;
+  border-radius:var(--radius-full);
+  font-family:var(--font-sans);
+  font-size:0.78rem;
+  font-weight:600;
+  color:var(--ink-muted);
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.mode-btn.active{
+  background:var(--accent);
+  color:#ffffff;
+  box-shadow:0 2px 8px rgba(38,67,60,0.3);
+}
+
+/* Badges da Hero com sombra escura elegante */
+.hero-badge{
+  position:absolute;
+  z-index:7;
+  background:rgba(255, 255, 255, 0.95);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255, 255, 255, 0.95);
+  padding:14px 18px;
+  border-radius:var(--radius-md);
+  box-shadow:0 16px 36px rgba(18, 28, 25, 0.22), 0 4px 12px rgba(18, 28, 25, 0.1);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-badge:hover{transform:translateY(-3px);box-shadow:0 20px 42px rgba(18, 28, 25, 0.28)}
+
+.hero-badge.badge-top{top:24px;left:-22px}
+.hero-badge.badge-bottom{bottom:-18px;right:22px}
+.badge-icon{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  background:var(--accent-badge-bg);
+  color:var(--accent);
+  display:grid;
+  place-items:center;
+  flex:none;
+}
+.badge-icon svg{width:20px;height:20px}
+.badge-text b{display:block;font-size:0.92rem;color:var(--ink)}
+.badge-text span{font-size:0.8rem;color:var(--ink-muted)}
+
+/* Faixa de Prova Social */
+.social-proof-bar{
+  margin-top:60px;
+  padding-top:36px;
+  border-top:1px solid var(--border);
+}
+.social-proof-header{
+  text-align:center;
+  font-size:0.88rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  color:var(--ink-light);
+  margin-bottom:24px;
+}
+.proof-badges{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));
+  gap:16px;
+  justify-content:center;
+}
+.proof-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 20px;
+  background:rgba(255, 255, 255, 0.7);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  transition:var(--transition);
+}
+.proof-item:hover{
+  background:#ffffff;
+  border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:var(--shadow-sm);
+}
+.proof-item svg{width:24px;height:24px;color:var(--accent);flex:none}
+.proof-item div b{display:block;font-size:0.9rem;color:var(--ink)}
+.proof-item div span{font-size:0.78rem;color:var(--ink-muted)}
+
+/* ========================================================
+   SEÇÃO 2: DESAFIOS (Alinhamento & Quebras de Linha)
+   ======================================================== */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+.card{
+  background:var(--surface-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:32px 28px;
+  transition:var(--transition);
+  position:relative;
+  overflow:hidden;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-md);
+  border-color:rgba(38,67,60,0.3);
+}
+.card-problem:hover{border-left:4px solid #c84f42}
+.card h3{margin-bottom:12px;font-size:1.2rem}
+.card p{color:var(--ink-muted);font-size:0.98rem;line-height:1.6}
+
+.icon{
+  width:50px;
+  height:50px;
+  border-radius:12px;
+  background:var(--surface);
+  color:var(--accent);
+  display:grid;
+  place-items:center;
+  margin-bottom:20px;
+  transition:all 0.3s ease;
+}
+.card:hover .icon{
+  background:var(--accent);
+  color:#ffffff;
+  transform:scale(1.05);
+}
+.icon svg{width:26px;height:26px}
+.icon.alert{color:#c84f42;background:#fdf1ef}
+.card:hover .icon.alert{background:#c84f42;color:#ffffff}
+
+.agitation-box{
+  margin-top:40px;
+  padding:28px 32px;
+  background:linear-gradient(135deg, #ffffff 0%, var(--surface) 100%);
+  border-left:5px solid var(--accent);
+  border-radius:0 var(--radius-md) var(--radius-md) 0;
+  box-shadow:var(--shadow-sm);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+.agitation-text{font-size:1.15rem;font-weight:600;color:var(--ink);max-width:760px}
+.agitation-text span{color:var(--accent)}
+
+/* ========================================================
+   SEÇÃO 3: COMO TRABALHAMOS (Quebras de Linha Ajustadas)
+   ======================================================== */
+.solution-top{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:64px;
+  align-items:center;
+  margin-bottom:56px;
+}
+.solution-top p{margin-top:18px;color:var(--ink-muted);font-size:1.1rem;line-height:1.65}
+
+.solution-visual{
+  position:relative;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:var(--shadow-md);
+  border:1px solid var(--border);
+}
+.solution-visual img{
+  width:100%;
+  height:380px;
+  object-fit:cover;
+  transition:transform 0.6s ease;
+}
+.solution-visual:hover img{transform:scale(1.04)}
+.solution-tag{
+  position:absolute;
+  bottom:16px;
+  left:16px;
+  background:rgba(255,255,255,0.94);
+  backdrop-filter:blur(8px);
+  padding:8px 16px;
+  border-radius:var(--radius-full);
+  font-size:0.84rem;
+  font-weight:700;
+  color:var(--accent);
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.steps{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  counter-reset:s;
+}
+.steps li{
+  counter-increment:s;
+  background:var(--surface-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:32px 26px;
+  transition:var(--transition);
+  position:relative;
+}
+.steps li:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-md);
+}
+.step-number{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:var(--accent);
+  color:var(--on-accent);
+  display:grid;
+  place-items:center;
+  font-weight:700;
+  font-size:1.05rem;
+  margin-bottom:18px;
+  box-shadow:0 4px 12px rgba(38,67,60,0.22);
+}
+.steps h3{margin-bottom:10px;font-size:1.18rem;line-height:1.3}
+.steps p{color:var(--ink-muted);font-size:0.96rem;line-height:1.6}
+
+/* ========================================================
+   RECURSO INTERATIVO 1: SLIDER ANTES & DEPOIS (Mesmo Ambiente)
+   ======================================================== */
+.before-after-section{
+  padding:var(--section-y) 0;
+  background:var(--bg);
+}
+.ba-wrapper{
+  max-width:1040px;
+  margin:0 auto;
+  position:relative;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  border:1px solid var(--border);
+  user-select:none;
+}
+.ba-container{
+  position:relative;
+  width:100%;
+  height:520px;
+  overflow:hidden;
+  cursor:ew-resize;
+}
+/* Prevenção rigorosa do bug de arrastar imagem fantasma */
+.ba-container img{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+}
+.ba-before{
+  position:absolute;
+  top:0;
+  left:0;
+  width:50%;
+  height:100%;
+  overflow:hidden;
+  z-index:2;
+  border-right:3px solid var(--gold);
+  will-change:width;
+}
+.ba-before img{
+  width:var(--ba-w, 1040px);
+  max-width:none;
+  height:100%;
+}
+/* Alça deslizante central */
+.ba-handle{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:var(--gold);
+  color:#ffffff;
+  display:grid;
+  place-items:center;
+  transform:translate(-50%, -50%);
+  z-index:10;
+  box-shadow:0 4px 18px rgba(0,0,0,0.35);
+  cursor:ew-resize;
+  pointer-events:none;
+}
+.ba-handle svg{width:22px;height:22px}
+
+/* Badges externos fixos que nunca empilham ou sofrem overflow */
+.ba-badge{
+  position:absolute;
+  bottom:20px;
+  padding:8px 16px;
+  border-radius:var(--radius-full);
+  font-size:0.82rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  z-index:8;
+  backdrop-filter:blur(8px);
+  white-space:nowrap;
+  pointer-events:none;
+}
+.ba-badge.before-label{
+  left:20px;
+  background:rgba(20, 24, 23, 0.85);
+  color:#ffffff;
+}
+.ba-badge.after-label{
+  right:20px;
+  background:rgba(255, 255, 255, 0.94);
+  color:var(--accent);
+  box-shadow:0 4px 14px rgba(0,0,0,0.1);
+}
+.ba-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 26px;
+  background:#ffffff;
+  border-top:1px solid var(--border);
+  font-size:0.92rem;
+  color:var(--ink-muted);
+  gap:16px;
+}
+.ba-meta span{text-wrap:balance}
+
+/* ========================================================
+   CARROSSEL INTERATIVO DE PROJETOS (Tags fixas e instantâneas)
+   ======================================================== */
+.projects-section{
+  padding:var(--section-y) 0;
+  background:#ffffff;
+  overflow:hidden;
+  position:relative;
+}
+.carousel-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  margin-bottom:44px;
+  gap:24px;
+}
+.carousel-controls{display:flex;gap:12px;align-items:center}
+.carousel-btn{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--ink);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:var(--transition);
+}
+.carousel-btn:hover{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#ffffff;
+  transform:scale(1.06);
+}
+.carousel-btn svg{width:22px;height:22px}
+
+.carousel-container{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius-lg);
+  user-select:none;
+}
+.carousel-track{
+  display:flex;
+  gap:24px;
+  transition:transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change:transform;
+}
+.project-card{
+  flex:0 0 calc(50% - 12px);
+  min-width:calc(50% - 12px);
+  background:var(--surface);
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  border:1px solid var(--border);
+  transition:var(--transition);
+  display:flex;
+  flex-direction:column;
+}
+.project-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-lg);
+  border-color:rgba(38,67,60,0.3);
+}
+.project-img-wrap{
+  position:relative;
+  height:320px;
+  overflow:hidden;
+}
+.project-img-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform 0.5s ease;
+  position:relative;
+  z-index:1;
+}
+.project-card:hover .project-img-wrap img{transform:scale(1.05)}
+
+/* Tags com z-index alto e camada GPU para NUNCA sumirem ou terem delay */
+.project-tag{
+  position:absolute;
+  top:16px;
+  left:16px;
+  z-index:10 !important;
+  pointer-events:none;
+  opacity:1 !important;
+  visibility:visible !important;
+  background:rgba(255,255,255,0.94);
+  backdrop-filter:blur(6px);
+  color:var(--accent);
+  padding:6px 14px;
+  border-radius:var(--radius-full);
+  font-size:0.78rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  transform:translateZ(0);
+}
+.project-area{
+  position:absolute;
+  bottom:16px;
+  right:16px;
+  z-index:10 !important;
+  pointer-events:none;
+  opacity:1 !important;
+  visibility:visible !important;
+  background:rgba(20, 24, 23, 0.88);
+  backdrop-filter:blur(6px);
+  color:#ffffff;
+  padding:5px 12px;
+  border-radius:var(--radius-full);
+  font-size:0.8rem;
+  font-weight:600;
+  transform:translateZ(0);
+}
+
+.project-info{
+  padding:26px 28px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.project-info h3{font-size:1.3rem;margin-bottom:8px}
+.project-info p{color:var(--ink-muted);font-size:0.95rem;line-height:1.55;margin-bottom:18px}
+.project-footer-row{
+  margin-top:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+.project-specs{font-size:0.86rem;color:var(--ink-muted);display:flex;gap:12px}
+.project-specs span{display:inline-flex;align-items:center;gap:6px}
+.project-specs svg{width:16px;height:16px;color:var(--accent)}
+.btn-view-project{
+  border:none;
+  background:transparent;
+  color:var(--accent);
+  font-weight:700;
+  font-size:0.88rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 8px;
+  border-radius:var(--radius-xs);
+  transition:all 0.2s ease;
+}
+.btn-view-project:hover{background:var(--accent-badge-bg);color:var(--accent-hover)}
+
+.carousel-dots{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:32px;
+}
+.dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:var(--border);
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+.dot.active{
+  width:32px;
+  border-radius:6px;
+  background:var(--accent);
+}
+
+/* ========================================================
+   SEÇÃO 4: BENEFÍCIOS
+   ======================================================== */
+.benefit-card{
+  background:var(--surface-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:32px 26px;
+  transition:var(--transition);
+}
+.benefit-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-md);
+  border-color:var(--accent);
+}
+.benefit-card h3{margin-bottom:10px;font-size:1.18rem}
+.benefit-card p{color:var(--ink-muted);font-size:0.96rem}
+
+/* ========================================================
+   RECURSO INTERATIVO 2: SIMULADOR DE ESCOPO (Mais Visual & Encaixado)
+   ======================================================== */
+.simulator-section{
+  padding:54px 0 64px; /* Padding superior reduzido para encaixe perfeito */
+  background:var(--surface);
+}
+.simulator-card{
+  background:#ffffff;
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  padding:36px 36px;
+  box-shadow:var(--shadow-md);
+  display:grid;
+  grid-template-columns:1.25fr 0.95fr;
+  gap:40px;
+  align-items:stretch;
+}
+.sim-controls{display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+.sim-controls{gap:0}
+.sim-group{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 0}
+.sim-group+.sim-group{border-top:1px solid var(--border)}
+.sim-group label{
+  display:block;
+  font-size:0.92rem;
+  font-weight:700;
+  margin-bottom:10px;
+  color:var(--ink);
+}
+.sim-options{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.sim-pill{
+  padding:9px 16px;
+  border-radius:var(--radius-full);
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--ink-muted);
+  font-size:0.88rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.sim-pill svg{width:16px;height:16px}
+.sim-pill:hover{border-color:var(--accent);color:var(--ink)}
+.sim-pill.active{
+  background:var(--accent);
+  color:#ffffff;
+  border-color:var(--accent);
+  box-shadow:0 4px 12px rgba(38,67,60,0.22);
+}
+
+/* Slider de Metragem com Marcações */
+.range-wrap{display:flex;flex-direction:column;gap:6px}
+.range-header{display:flex;justify-content:space-between;align-items:baseline}
+.range-header span.val{font-size:1.35rem;font-weight:800;color:var(--accent)}
+.sim-range{
+  width:100%;
+  accent-color:var(--accent);
+  cursor:pointer;
+  height:8px;
+  border-radius:4px;
+}
+.range-marks{
+  display:flex;
+  justify-content:space-between;
+  font-size:0.75rem;
+  color:var(--ink-light);
+  font-weight:600;
+  margin-top:2px;
+}
+
+/* Painel Visual de Fases & Cronograma no Simulador */
+.sim-result{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:28px 24px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  justify-content:space-between;
+}
+.sim-result-head{border-bottom:1px solid var(--border);padding-bottom:14px}
+.sim-result-head span{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-light);font-weight:700}
+.sim-result-head h4{font-size:1.25rem;color:var(--ink);margin-top:2px}
+
+/* Gráfico Visual de Linha do Tempo de Fases */
+.sim-phase-bars{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.sim-phase-item{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.sim-phase-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:0.8rem;
+  font-weight:600;
+  color:var(--ink-muted);
+}
+.sim-progress-track{
+  height:7px;
+  background:#e6dfce;
+  border-radius:4px;
+  overflow:hidden;
+}
+.sim-progress-fill{
+  height:100%;
+  background:var(--accent);
+  border-radius:4px;
+  transition:width 0.4s ease;
+}
+.sim-progress-fill.gold{background:var(--gold)}
+
+.sim-checklist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.sim-checklist li{display:flex;align-items:center;gap:8px;font-size:0.88rem;color:var(--ink-muted)}
+.sim-checklist li svg{width:16px;height:16px;color:var(--accent);flex:none}
+
+/* ========================================================
+   SEÇÃO 5: PROVA SOCIAL & DEPOIMENTOS
+   ======================================================== */
+.stats-banner{
+  background:linear-gradient(135deg, #ffffff 0%, var(--surface) 100%);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:44px 32px;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:24px;
+  margin-bottom:56px;
+  box-shadow:var(--shadow-sm);
+  text-align:center;
+}
+.stat{position:relative}
+.stat:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:15%;
+  height:70%;
+  width:1px;
+  background:var(--border);
+}
+.stat-number{
+  display:block;
+  font-size:clamp(2.1rem, 4vw, 3rem);
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-0.03em;
+  color:var(--accent);
+}
+.stat-label{
+  display:block;
+  margin-top:6px;
+  color:var(--ink-muted);
+  font-size:0.92rem;
+  font-weight:500;
+}
+
+.quote-card{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  background:#ffffff;
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:32px 28px;
+  box-shadow:var(--shadow-sm);
+  transition:var(--transition);
+}
+.quote-card:hover{
+  transform:translateY(-5px);
+  box-shadow:var(--shadow-md);
+  border-color:rgba(38,67,60,0.3);
+}
+.quote-stars{display:flex;gap:4px;color:#f59e0b}
+.quote-stars svg{width:18px;height:18px;fill:currentColor}
+.quote-card blockquote{
+  margin:0;
+  font-size:0.98rem;
+  color:var(--ink);
+  line-height:1.65;
+  font-style:italic;
+}
+.result-badge{
+  font-size:0.86rem;
+  font-weight:600;
+  color:var(--accent);
+  background:var(--accent-badge-bg);
+  padding:8px 14px;
+  border-radius:var(--radius-sm);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.person{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:auto;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+.person-img{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--accent-badge-bg);
+}
+.person b{display:block;font-size:1rem;color:var(--ink);line-height:1.3}
+.person span{font-size:0.82rem;color:var(--ink-muted)}
+
+.partners-row{
+  margin-top:48px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:36px;
+  flex-wrap:wrap;
+  opacity:0.75;
+  transition:opacity 0.3s;
+}
+.partners-row:hover{opacity:1}
+.partner-logo.dup{display:none}
+.partner-logo{
+  font-weight:800;
+  font-size:1.15rem;
+  letter-spacing:0.08em;
+  color:var(--ink-muted);
+  text-transform:uppercase;
+  padding:8px 16px;
+}
+
+/* ========================================================
+   SEÇÃO 6: PERGUNTAS FREQUENTES
+   ======================================================== */
+.faq{max-width:820px;margin:0 auto}
+.faq-item{
+  border-bottom:1px solid var(--border);
+  transition:all 0.3s ease;
+}
+.faq-item:first-child{border-top:1px solid var(--border)}
+.faq-trigger{
+  width:100%;
+  background:transparent;
+  border:none;
+  padding:24px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  text-align:left;
+  cursor:pointer;
+  font-family:var(--font-sans);
+  font-size:1.15rem;
+  font-weight:600;
+  color:var(--ink);
+  transition:color 0.2s ease;
+}
+.faq-trigger:hover{color:var(--accent)}
+.faq-icon{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:var(--surface);
+  color:var(--accent);
+  display:grid;
+  place-items:center;
+  flex:none;
+  transition:all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq-icon svg{width:18px;height:18px;transition:transform 0.35s ease}
+
+.faq-content{
+  display:grid;
+  grid-template-rows:0fr;
+  transition:grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq-inner{overflow:hidden}
+.faq-inner p{
+  padding:0 0 24px;
+  color:var(--ink-muted);
+  font-size:1.02rem;
+  line-height:1.7;
+}
+
+.faq-item.active .faq-trigger{color:var(--accent)}
+.faq-item.active .faq-icon{
+  background:var(--accent);
+  color:#ffffff;
+}
+.faq-item.active .faq-icon svg{transform:rotate(180deg)}
+.faq-item.active .faq-content{grid-template-rows:1fr}
+
+/* ========================================================
+   SEÇÃO 7: ÚLTIMO CTA (Sem logo no fundo, sem travessão, sem redirecionamento real)
+   ======================================================== */
+.cta-section{padding:var(--section-y) 0}
+.cta-panel{
+  background:var(--deep-panel-gradient);
+  color:var(--on-accent);
+  border-radius:var(--radius-lg);
+  padding:72px 48px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(13, 28, 25, 0.32);
+  border:1px solid rgba(223, 213, 188, 0.25);
+}
+.cta-panel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 55% 60% at 50% 12%, rgba(184, 151, 88, 0.16) 0%, transparent 100%);
+  pointer-events:none;
+}
+
+.cta-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(223, 213, 188, 0.16);
+  border:1px solid rgba(223, 213, 188, 0.32);
+  color:var(--sand);
+  padding:6px 18px;
+  border-radius:var(--radius-full);
+  font-size:0.82rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  margin-bottom:24px;
+}
+.cta-panel h2{
+  max-width:22ch;
+  margin:0 auto;
+  color:#ffffff;
+  font-size:clamp(2rem, 4.2vw, 3rem);
+}
+.cta-panel .offer{
+  margin:18px auto 0;
+  max-width:56ch;
+  color:var(--sand);
+  font-size:1.15rem;
+  line-height:1.65;
+}
+.cta-actions{
+  margin-top:34px;
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  flex-wrap:wrap;
+  position:relative;
+  z-index:2;
+}
+
+.cta-panel .btn-secondary{
+  border-color:rgba(223, 213, 188, 0.6);
+  color:var(--sand);
+  background:transparent;
+}
+.cta-panel .btn-secondary:hover{
+  background:#ffffff !important;
+  border-color:#ffffff !important;
+  color:var(--accent-hover) !important;
+  box-shadow:0 10px 24px rgba(0,0,0,0.28);
+}
+
+.cta-badges-bottom{
+  margin-top:28px;
+  display:flex;
+  justify-content:center;
+  gap:24px;
+  flex-wrap:wrap;
+  font-size:0.88rem;
+  color:var(--sand);
+}
+.cta-badges-bottom span{display:inline-flex;align-items:center;gap:6px}
+.cta-badges-bottom span svg{flex:none;
+  width:16px;
+  height:16px;
+  color:var(--sand);
+  fill:var(--sand);
+}
+
+/* ========================================================
+   RODAPÉ (Compactado, Informações Neutras de Template)
+   ======================================================== */
+.footer{
+  background:var(--footer-bg);
+  color:#9aa7a1;
+  padding:48px 0 28px;
+  font-size:0.9rem;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.6fr 1fr 1.4fr;
+  gap:44px;
+  margin-bottom:36px;
+  align-items:start;
+}
+.footer-brand .brand{color:#ffffff;margin-bottom:12px}
+.footer-brand .brand svg{color:var(--sand)}
+.footer-brand p{color:#838f8a;font-size:0.88rem;line-height:1.6;max-width:34ch}
+.footer-brand .cau-info{margin-top:10px;font-size:0.8rem;color:#6b7671}
+
+.footer-col h4{
+  color:#ffffff;
+  font-size:0.95rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+  margin-bottom:16px;
+  text-transform:uppercase;
+}
+.footer-col ul{list-style:none;padding:0;margin:0}
+.footer-col li{margin-bottom:10px}
+.footer-col a{color:#838f8a;transition:color 0.2s ease}
+.footer-col a:hover{color:#ffffff}
+
+.contact-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;color:#838f8a}
+.contact-item svg{width:18px;height:18px;color:var(--sand);flex:none;margin-top:2px}
+
+.footer-bottom{
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  font-size:0.84rem;
+}
+.footer-legal{display:flex;gap:20px}
+.footer-legal a{color:#838f8a;transition:color 0.2s}
+.footer-legal a:hover{color:#ffffff}
+
+/* Modal de Ficha Técnica */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(10, 16, 14, 0.82);
+  backdrop-filter:blur(10px);
+  z-index:200;
+  display:none;
+  place-items:center;
+  padding:20px;
+}
+.modal-overlay.open{display:grid}
+.modal-box{
+  background:#ffffff;
+  max-width:840px;
+  width:100%;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.3);
+  position:relative;
+  animation:modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalSlide{
+  from{transform:translateY(24px) scale(0.97);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+.modal-close{
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,0.9);
+  color:var(--ink);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  z-index:10;
+  transition:all 0.2s ease;
+}
+.modal-close:hover{background:var(--accent);color:#ffffff}
+.modal-grid{display:grid;grid-template-columns:1.1fr 0.9fr}
+.modal-img{width:100%;height:100%;min-height:380px;object-fit:cover}
+.modal-content{
+  padding:36px 32px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.modal-content h3{font-size:1.6rem}
+.modal-content p{color:var(--ink-muted);font-size:0.96rem;line-height:1.6}
+.modal-tags{display:flex;gap:8px;flex-wrap:wrap}
+.modal-tag{
+  padding:4px 12px;
+  background:var(--accent-badge-bg);
+  color:var(--accent);
+  border-radius:var(--radius-full);
+  font-size:0.8rem;
+  font-weight:700;
+}
+
+/* Botão Flutuante do WhatsApp (Apenas efeito visual / abre modal de contato) */
+.floating-whatsapp{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  z-index:90;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#25d366;
+  color:#ffffff;
+  display:grid;
+  place-items:center;
+  box-shadow:0 8px 24px rgba(37,211,102,0.4);
+  transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration:none;
+  cursor:pointer;
+}
+.floating-whatsapp:hover{
+  transform:scale(1.1) translateY(-3px);
+  box-shadow:0 12px 30px rgba(37,211,102,0.55);
+}
+.floating-whatsapp svg{width:30px;height:30px;fill:#ffffff}
+.floating-whatsapp::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  box-shadow:0 0 0 0 rgba(37,211,102,0.45);
+  animation:waGlow 2.6s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes waGlow{0%{box-shadow:0 0 0 0 rgba(37,211,102,0.45)}70%,100%{box-shadow:0 0 0 16px rgba(37,211,102,0)}}
+
+/* Sticky CTA mobile */
+.sticky-cta{display:none}
+
+/* Responsividade */
+@media(max-width:1024px){
+  .hero-grid,.solution-top{grid-template-columns:1fr;gap:40px}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .stats-banner{grid-template-columns:repeat(2,1fr);gap:32px}
+  .stat:nth-child(2)::after{display:none}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .project-card{flex:0 0 calc(70% - 12px);min-width:calc(70% - 12px)}
+  .simulator-card{grid-template-columns:1fr;gap:32px}
+  .modal-grid{grid-template-columns:1fr}
+  .modal-img{height:240px;min-height:auto}
+}
+
+@media(max-width:768px){
+  :root{--section-y:60px}
+  body{font-size:15px;padding-bottom:76px}
+  
+  .header .btn{display:none}
+  .nav a.link{display:none}
+  .menu-toggle{display:grid}
+
+  .hero{padding:36px 0 44px}
+  .hero-badge.badge-top{left:10px;top:10px}
+  .hero-badge.badge-bottom{right:10px;bottom:10px}
+  .showcase-card img{height:340px}
+
+  .grid-2,.grid-3,.steps{grid-template-columns:1fr}
+  .project-card{flex:0 0 100%;min-width:100%}
+  .stats-banner{grid-template-columns:1fr;text-align:left;gap:20px;padding:32px 24px}
+  .stat:not(:last-child)::after{display:none}
+  
+  .ba-container{height:380px}
+  
+  .agitation-box{flex-direction:column;align-items:flex-start}
+  .cta-panel{padding:44px 22px}
+  .cta-actions .btn{width:100%}
+  
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+
+  .floating-whatsapp{bottom:90px;right:18px;width:52px;height:52px}
+  .sticky-cta{
+    display:block;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:80;
+    background:#ffffff;
+    border-top:1px solid var(--border);
+    padding:12px var(--gutter) calc(12px + env(safe-area-inset-bottom,0px));
+    box-shadow:0 -4px 16px rgba(0,0,0,0.06);
+  }
+  .sticky-cta .btn{width:100%;min-height:48px}
+}
+
+/* ========================================================
+   AJUSTES MOBILE (até 768px): espaçamento, hero, antes/depois, projetos, planejador, casos reais, FAQ, CTA
+   ======================================================== */
+@media(max-width:768px){
+  :root{--section-y:52px;--gutter:22px}
+  .section-head{margin-bottom:30px}
+  .section-head p{font-size:1rem;margin-top:12px}
+  h2{font-size:1.75rem}
+  .eyebrow{font-size:0.68rem;letter-spacing:0.1em;padding:7px 14px;margin-bottom:12px;line-height:1.35;border-radius:14px;text-align:left}
+  .eyebrow::before{flex:none}
+  .header .container{min-height:64px}
+  .mobile-drawer{top:100%}
+
+  /* --- Hero --- */
+  .hero{padding:26px 0 36px}
+  .hero-grid{gap:0}
+  .hero-content{display:contents}
+  .hero-grid > .hero-content > *,.hero-grid > .hero-visual{min-width:0}
+  .hero .eyebrow{justify-self:start;order:1}
+  .hero h1{order:2;margin-top:2px;font-size:2.15rem;line-height:1.14}
+  .hero .sub{order:3;margin-top:16px;font-size:1.02rem;max-width:none}
+  .hero .actions{order:4;margin-top:24px;flex-direction:column;align-items:stretch;gap:12px}
+  .hero .actions .btn{width:100%}
+  .hero-visual{order:5;margin-top:32px;display:flex;flex-direction:column;gap:12px}
+  .microproof{order:6;margin-top:26px;flex-direction:column;align-items:flex-start;gap:10px;font-size:0.9rem;padding:0 4px}
+
+  /* alternador vira uma barra acima da foto (não cobre mais a imagem) */
+  .showcase-card{border-radius:var(--radius-md)}
+  .showcase-card:hover{transform:none}
+  .hero-mode-switch{position:static;display:grid;grid-template-columns:1fr 1fr;gap:4px;border-radius:0;padding:8px;background:#ffffff;box-shadow:none;border-bottom:1px solid var(--border)}
+  .mode-btn{padding:10px 8px;font-size:0.82rem}
+  .showcase-card img{height:300px}
+  .blueprint-pin{font-size:0.7rem;padding:4px 9px}
+  .blueprint-pin.pin-1{top:30%;left:10px}
+  .blueprint-pin.pin-2{top:auto;bottom:14px;right:10px}
+  /* os dois cards viram linhas logo abaixo da foto, sem sobreposição */
+  .hero-badge,.hero-badge.badge-top,.hero-badge.badge-bottom{position:static;inset:auto;padding:12px 14px;gap:12px;border:1px solid var(--border);box-shadow:var(--shadow-sm);background:#ffffff}
+  .hero-badge:hover{transform:none;box-shadow:var(--shadow-sm)}
+  .hero-badge.badge-top{order:1}
+  .hero-badge.badge-bottom{order:2}
+  .hero-visual .showcase-card{order:0}
+  .badge-icon{width:38px;height:38px}
+
+  .social-proof-bar{margin-top:36px;padding-top:28px}
+  .social-proof-header{font-size:0.72rem;line-height:1.6;margin-bottom:18px;text-wrap:balance}
+  .proof-badges{grid-template-columns:1fr 1fr;gap:10px}
+  .proof-item{flex-direction:column;align-items:flex-start;gap:8px;padding:14px}
+  .proof-item div b{font-size:0.84rem;line-height:1.3}
+  .proof-item div span{display:block;margin-top:2px;font-size:0.74rem;line-height:1.4}
+
+  /* --- Desafios / método / diferenciais: respiro mais curto --- */
+  .grid-2,.grid-3,.steps{gap:14px}
+  .card,.steps li,.benefit-card{padding:24px 20px}
+  .card h3,.benefit-card h3{font-size:1.1rem}
+  .icon{margin-bottom:16px}
+  .agitation-box{margin-top:28px;padding:22px 20px;gap:18px}
+  .agitation-text{font-size:1.02rem}
+  .agitation-box .btn{width:100%}
+  .solution-top{gap:26px;margin-bottom:32px}
+  .solution-top p{font-size:1rem;margin-top:14px}
+  .solution-visual img{height:240px}
+
+  /* --- Antes e depois --- */
+  .before-after-section{padding:var(--section-y) 0 40px}
+  .ba-container{height:400px}
+  .ba-badge{font-size:0.7rem;padding:7px 12px}
+  .ba-badge.before-label{top:14px;bottom:auto;left:14px}
+  .ba-badge.after-label{bottom:14px;top:auto;right:14px}
+  .ba-handle{width:42px;height:42px}
+  .ba-meta{flex-direction:column;align-items:stretch;gap:0;padding:0}
+  .ba-meta > span{display:block;padding:16px 18px;line-height:1.55}
+  .ba-meta > span + span{border-top:1px solid var(--border);background:var(--surface);white-space:normal !important;font-size:0.9rem}
+
+  /* --- Projetos --- */
+  .projects-section{padding:40px 0 var(--section-y)}
+  .carousel-header{flex-direction:column;align-items:flex-start;margin-bottom:26px;gap:0}
+  .carousel-controls{display:none}
+  .carousel-track{gap:24px}
+  .project-img-wrap{height:230px}
+  .project-info{padding:20px 18px 18px}
+  .project-info h3{font-size:1.15rem}
+  .project-info p{font-size:0.92rem;margin-bottom:16px}
+  .project-footer-row{flex-direction:column;align-items:stretch;gap:14px}
+  .project-specs{flex-wrap:wrap;gap:8px}
+  .project-specs span{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-full);padding:6px 11px;font-size:0.78rem;line-height:1.2}
+  .btn-view-project{justify-content:center;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem}
+  .carousel-dots{margin-top:24px}
+
+  /* --- Planejador --- */
+  .simulator-section{padding:var(--section-y) 0}
+  .simulator-card{padding:22px 16px;gap:22px;border-radius:var(--radius-md)}
+  .sim-controls{gap:0}
+  .sim-group{flex:none;padding:18px 0}
+  .sim-group:first-child{padding-top:0}
+  .sim-group:last-child{padding-bottom:0}
+  .sim-group label{font-size:0.9rem;margin-bottom:10px}
+  .sim-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .sim-pill{flex-direction:column;justify-content:center;gap:6px;text-align:center;padding:12px 4px;border-radius:12px;font-size:0.78rem;line-height:1.25;min-height:64px}
+  .sim-pill svg{width:20px;height:20px}
+  .range-header{align-items:center;gap:10px}
+  .range-header label{font-size:0.9rem}
+  .range-header span.val{font-size:1.25rem;white-space:nowrap}
+  .sim-result{padding:20px 16px;gap:16px}
+  .sim-result-head h4{font-size:1.08rem;line-height:1.3}
+  .sim-phase-bars{gap:14px}
+  .sim-phase-label{flex-direction:column;gap:1px;font-size:0.82rem}
+  .sim-phase-label span:last-child{color:var(--accent);font-weight:700;font-size:0.78rem}
+  .sim-checklist li{align-items:flex-start;line-height:1.45}
+  .sim-checklist li svg{margin-top:2px}
+
+  /* --- Casos reais: tudo centralizado --- */
+  .stats-banner{grid-template-columns:1fr 1fr;text-align:center;gap:26px 10px;padding:28px 12px;margin-bottom:36px}
+  .stat:nth-child(odd)::after{display:block;right:0}
+  .stat:nth-child(2)::after{display:none}
+  .stat-number{font-size:2.1rem}
+  .stat-label{font-size:0.82rem;line-height:1.35;padding:0 6px;text-wrap:balance}
+  .quote-card{text-align:center;align-items:center;padding:26px 20px;gap:16px}
+  .quote-stars{justify-content:center}
+  .quote-card blockquote{font-size:0.95rem}
+  .result-badge{align-self:center;justify-content:center;text-align:center;font-size:0.84rem}
+  .person{flex-direction:column;justify-content:center;text-align:center;width:100%;gap:10px}
+  .person-img{width:56px;height:56px}
+
+  /* parceiros: uma linha só, rolando sozinha, com fade nas pontas */
+  .partners-row{margin-top:34px;overflow:hidden;justify-content:flex-start;flex-wrap:nowrap;opacity:1;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%)}
+  .partners-track{display:flex;flex:none;width:max-content;align-items:center;animation:partnersScroll 24s linear infinite}
+  .partner-logo{flex:none;white-space:nowrap;font-size:1rem;padding:8px 20px}
+  .partner-logo.dup{display:block}
+
+  /* --- FAQ: texto menor --- */
+  .faq-trigger{font-size:0.98rem;padding:18px 0;gap:14px;line-height:1.4}
+  .faq-icon{width:30px;height:30px}
+  .faq-inner p{font-size:0.92rem;line-height:1.65;padding-bottom:18px}
+
+  /* --- CTA final --- */
+  .cta-section{padding:36px 0 var(--section-y)}
+  .cta-panel{padding:40px 20px 34px}
+  .cta-badge{font-size:0.66rem;letter-spacing:0.07em;padding:8px 14px;margin-bottom:20px;line-height:1.4;border-radius:14px;text-align:center}
+  .cta-panel h2{font-size:1.7rem;line-height:1.2}
+  .cta-panel .offer{font-size:1rem;line-height:1.6;margin-top:14px}
+  .cta-actions{margin-top:26px;gap:12px}
+  .cta-badges-bottom{flex-direction:column;align-items:center;gap:12px;margin-top:26px;font-size:0.84rem}
+  .cta-badges-bottom > span{align-items:flex-start;text-align:left;max-width:100%}
+  .cta-badges-bottom > span svg{margin-top:2px}
+
+  .floating-whatsapp svg{width:27px;height:27px}
+}
+@keyframes partnersScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .partners-row{overflow-x:auto;-webkit-mask-image:none;mask-image:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Ícones SVG Reutilizáveis -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 417.96 416" fill="currentColor">
+    <path d="m290.53.3l-118.71,68.54C193.98,27.99,237.25.25,287,.25c1.18,0,2.36.02,3.53.05Z"/>
+    <path d="m341.04,11.89l-184.37,106.44c1.04-10.66,3.35-20.95,6.8-30.7L311.01,2.45c10.5,1.94,20.57,5.14,30.03,9.44Z"/>
+    <path d="m374.19,33.5l-215.43,124.38c-1.69-8.16-2.62-16.59-2.71-25.22L353.76,18.52c7.3,4.33,14.14,9.35,20.43,14.98Z"/>
+    <path d="m397.46,60.82l-226.65,130.85c-3.59-6.87-6.59-14.11-8.92-21.63l221.26-127.74c5.3,5.72,10.09,11.92,14.31,18.52Z"/>
+    <path d="m412.3,93l-221,127.6c-5.33-5.7-10.16-11.88-14.41-18.47l226.59-130.82c3.56,6.89,6.52,14.15,8.82,21.69Z"/>
+    <path d="m284.7,262.15l116.89-67.49c-22.34,40.26-65.28,67.51-114.59,67.51-.77,0-1.54-.01-2.3-.02Z"/>
+    <path d="m417.25,144.87c-1.1,10.73-3.51,21.06-7.05,30.85l-146.24,84.43c-10.59-1.88-20.74-5.03-30.29-9.29l183.58-105.99Z"/>
+    <path d="m417.96,130.48l-197.08,113.79h-.01c-7.34-4.3-14.22-9.3-20.56-14.91l215.07-124.16c1.64,8.18,2.53,16.63,2.58,25.28Z"/>
+    <path d="m157.31,178.48V0H.47v178.48c-.1,1.61-.15,3.24-.15,4.87s.06,3.26.15,4.87c2.41,39.52,34.03,71.14,73.55,73.55,1.61.1,3.24.15,4.87.15s3.26-.06,4.87-.15h73.55v-73.55c.1-1.61.15-3.24.15-4.87s-.06-3.26-.15-4.87Z"/>
+    <path d="m238.65,258.71h178.48v156.84h-178.48c-1.61.1-3.24.15-4.87.15s-3.26-.06-4.87-.15c-39.52-2.41-71.14-34.03-73.55-73.55-.1-1.61-.15-3.24-.15-4.87s.06-3.26.15-4.87v-73.55h73.55c1.61-.1,3.24-.15,4.87-.15s3.26.06,4.87.15Z"/>
+    <path d="m157.31,332.56v-73.55h-73.55c-1.61-.1-3.24-.15-4.87-.15s-3.26.06-4.87.15H31.05c-1.57-.3-3.19-.45-4.85-.45s-3.28.15-4.85.45c-10.54,1.97-18.85,10.25-20.87,20.78-.31,1.61-.47,3.27-.47,4.97s.17,3.36.47,4.97v42.83c-.1,1.61-.15,3.24-.15,4.87s.06,3.26.15,4.87c2.41,39.52,34.03,71.14,73.55,73.55,1.61.1,3.24.15,4.87.15s3.26-.06,4.87-.15h46.47c.3.02.6.02.89.02s.6,0,.89-.02c14.05-.46,25.29-11.99,25.29-26.17v-47.38c.1-1.61.15-3.24.15-4.87s-.06-3.26-.15-4.87Z"/>
+  </symbol>
+  
+  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="10" y1="18" x2="14" y2="18"/></symbol>
+  <symbol id="i-clinic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M12 9v6"/><path d="M9 12h6"/></symbol>
+  <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.456 5.711 1.457h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></symbol>
+</svg>
+
+<!-- Header Principal Sticky -->
+<header class="header" id="header">
+  <div class="container">
+    <a class="brand" href="#hero" aria-label="LopesArq — Página Inicial">
+      <svg><use href="#mark"/></svg>
+      <span>LOPES<b>ARQ</b></span>
+    </a>
+    
+    <nav class="nav" aria-label="Navegação Principal">
+      <a class="link" href="#solucao">Como trabalhamos</a>
+      <a class="link" href="#projetos">Projetos</a>
+      <a class="link" href="#beneficios">Diferenciais</a>
+      <a class="link" href="#simulador">Planejar projeto</a>
+      <a class="link" href="#prova-social">Clientes</a>
+      <a class="link" href="#faq">Dúvidas</a>
+      
+      <!-- Botão com contorno tracejado no hover -->
+      <a class="btn btn-primary" href="#cta">
+        
+        <span>Agendar conversa</span>
+        <svg class="icon-arrow"><use href="#i-arrow-right"/></svg>
+      </a>
+    </nav>
+    
+    <!-- Botão Menu Mobile (Apenas em telas pequenas) -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileDrawer"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
+  </div>
+  
+  <!-- Drawer Mobile (Controlado por JavaScript somente no mobile) -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="#solucao" class="mobile-link">Como trabalhamos</a>
+    <a href="#projetos" class="mobile-link">Projetos</a>
+    <a href="#beneficios" class="mobile-link">Diferenciais</a>
+    <a href="#simulador" class="mobile-link">Planejar projeto</a>
+    <a href="#prova-social" class="mobile-link">Clientes</a>
+    <a href="#faq" class="mobile-link">Dúvidas</a>
+    <a class="btn btn-primary" href="#cta" style="width:100%">Agendar conversa</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ========================================================
+     HERO SECTION
+     ======================================================== -->
+<section class="section hero" id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <span class="eyebrow"><span class="eb-t">Arquitetura &amp; Interiores <span class="nw">de Alto Padrão</span></span></span>
+        <h1>Unindo design e funcionalidade para criar <span class="serif">espaços únicos</span></h1>
+        <p class="sub">Projetos residenciais e corporativos pensados para o seu estilo de vida — com rigor estético, previsibilidade orçamentária e acompanhamento técnico do primeiro traço à entrega final.</p>
+        
+        <div class="actions">
+          <a class="btn btn-primary" href="#cta">
+            
+            <span>Agendar consultoria inicial</span>
+            <svg class="icon-arrow"><use href="#i-arrow-right"/></svg>
+          </a>
+          <!-- Botão secundário com contorno animado e sem ficar verde sólido no hover -->
+          <a class="btn btn-secondary" href="#projetos">
+            
+            <span>Ver projetos realizados</span>
+          </a>
+        </div>
+        
+        <div class="microproof">
+          <span><svg><use href="#i-check"/></svg> Diagnóstico inicial sem custo</span>
+          <span><svg><use href="#i-shield"/></svg> RRT & Registro CAU/BR</span>
+          <span><svg><use href="#i-star"/></svg> Nota 4.9 no Google</span>
+        </div>
+      </div>
+      
+      <!-- Visual Interativo da Hero com Alternador Obra vs Conceito 3D Diferenciado -->
+      <div class="hero-visual">
+        <div class="hero-badge badge-top">
+          <div class="badge-icon"><svg><use href="#i-home"/></svg></div>
+          <div class="badge-text">
+            <b>Residência Bosque</b>
+            <span>480 m² · São Paulo</span>
+          </div>
+        </div>
+
+        <div class="showcase-card" id="heroShowcase">
+          <!-- Alternador interativo -->
+          <div class="hero-mode-switch">
+            <button class="mode-btn active" id="btnModeReal" onclick="switchHeroMode('real')">Obra Entregue</button>
+            <button class="mode-btn" id="btnMode3D" onclick="switchHeroMode('3d')">Conceito 3D</button>
+          </div>
+          
+          <img id="heroImage" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85" alt="Projeto Residencial assinado por LopesArq">
+          
+          <!-- Callout pins técnicos que aparecem no Conceito 3D -->
+          <div class="blueprint-pin pin-1">📐 Vão livre: 8.40m</div>
+          <div class="blueprint-pin pin-2">💡 Iluminação cênica</div>
+        </div>
+
+        <div class="hero-badge badge-bottom">
+          <div class="badge-icon"><svg><use href="#i-check"/></svg></div>
+          <div class="badge-text">
+            <b id="heroBadgeStatus">100% de Fidelidade</b>
+            <span id="heroBadgeSub">Orçamento & cronograma cumpridos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Faixa de Prova Social -->
+    <div class="social-proof-bar">
+      <p class="social-proof-header">Credibilidade comprovada · Rigor técnico e excelência em cada detalhe</p>
+      <div class="proof-badges">
+        <div class="proof-item">
+          <svg><use href="#i-shield"/></svg>
+          <div><b>Registro CAU/BR Ativo</b><span>Responsabilidade técnica total</span></div>
+        </div>
+        <div class="proof-item">
+          <svg><use href="#i-home"/></svg>
+          <div><b>+140 Projetos Realizados</b><span>Residenciais e corporativos</span></div>
+        </div>
+        <div class="proof-item">
+          <svg><use href="#i-star"/></svg>
+          <div><b>Avaliação 4.9 / 5.0</b><span>Satisfação máxima de clientes</span></div>
+        </div>
+        <div class="proof-item">
+          <svg><use href="#i-compass"/></svg>
+          <div><b>Projetos Compatibilizados</b><span>Zero retrabalho na obra</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SEÇÃO 2: DORES / DESAFIOS (Alinhamento & Quebras Ajustadas)
+     ======================================================== -->
+<section class="section alt" id="desafios">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Evite Dores de Cabeça</span>
+      <h2>Reformar ou construir não precisa ser um pesadelo</h2>
+      <p>A maioria das frustrações em obras acontece pela falta de um projeto executivo detalhado e de um método claro de gestão.</p>
+    </div>
+    
+    <div class="grid-2">
+      <article class="card card-problem">
+        <div class="icon alert"><svg><use href="#i-alert"/></svg></div>
+        <h3>Orçamento que foge do controle</h3>
+        <p>Sem quantitativos exatos e memorial descritivo, os custos dobram na metade da obra e o investimento financeiro planejado simplesmente não fecha.</p>
+      </article>
+      
+      <article class="card card-problem">
+        <div class="icon alert"><svg><use href="#i-alert"/></svg></div>
+        <h3>Ambiente lindo na foto, mas inútil no dia a dia</h3>
+        <p>Soluções genéricas de catálogo que ignoram a rotina familiar, resultando em iluminação desconfortável, falta de tomadas e circulação travada.</p>
+      </article>
+      
+      <article class="card card-problem">
+        <div class="icon alert"><svg><use href="#i-alert"/></svg></div>
+        <h3>Prazos que se arrastam indefinidamente</h3>
+        <p>A ausência de compatibilização entre hidráulica, elétrica e marcenaria gera retrabalho constante e transforma 4 meses em 1 ano de estresse.</p>
+      </article>
+      
+      <article class="card card-problem">
+        <div class="icon alert"><svg><use href="#i-alert"/></svg></div>
+        <h3>Falta de transparência e comunicação confusa</h3>
+        <p>Você nunca sabe com clareza o que foi decidido, qual etapa está em andamento e por que certas compras precisam ser feitas às pressas.</p>
+      </article>
+    </div>
+    
+    <div class="agitation-box">
+      <p class="agitation-text">Cada decisão improvisada no canteiro custa até <span>5x mais</span> do que se tivesse sido resolvida na prancheta. Nosso papel é blindar você contra o retrabalho.</p>
+      <a class="btn btn-secondary" href="#solucao">
+        
+        <span>Conheça nosso método</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SEÇÃO 3: COMO TRABALHAMOS (Quebra "de obra" ajustada)
+     ======================================================== -->
+<section class="section" id="solucao">
+  <div class="container">
+    <div class="solution-top">
+      <div>
+        <span class="eyebrow">Metodologia LopesArq</span>
+        <h2>Um projeto transparente, do primeiro rascunho à chave na mão</h2>
+        <p>A LopesArq conduz cada fase com clareza, cronograma detalhado e comunicação próxima. Você visualiza cada ambiente em 3D realista antes de comprar o primeiro saco de cimento.</p>
+      </div>
+      
+      <div class="solution-visual">
+        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=85" alt="Processo de detalhamento arquitetônico LopesArq">
+        <div class="solution-tag">✦ Projeto Executivo Detalhado</div>
+      </div>
+    </div>
+    
+    <ol class="steps">
+      <li>
+        <div class="step-number">01</div>
+        <!-- Quebra intencional sem palavra viúva -->
+        <h3>Imersão & Briefing<br>Estratégico</h3>
+        <p>Mapeamos suas reais necessidades, estilo de vida, expectativas estéticas e teto de investimento para alinhar o escopo desde o primeiro dia.</p>
+      </li>
+      <li>
+        <div class="step-number">02</div>
+        <!-- Quebra intencional -->
+        <h3>Estudo 3D & Projeto<br>Executivo</h3>
+        <p>Desenvolvemos maquetes virtuais fotorrealistas e pranchas técnicas completas com especificações exatas de acabamentos, iluminação e marcenaria.</p>
+      </li>
+      <li>
+        <div class="step-number">03</div>
+        <!-- "de obra" posicionado na linha de baixo conforme solicitado -->
+        <h3>Acompanhamento técnico<br>de obra</h3>
+        <p>Supervisionamos as etapas executivas no canteiro, alinhamos detalhes com fornecedores e asseguramos que o resultado seja idêntico ao planejado.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ========================================================
+     RECURSO INTERATIVO 1: SLIDER ANTES & DEPOIS (Mesmo Ambiente Interno)
+     ======================================================== -->
+<section class="before-after-section" id="antes-depois">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow gold">Transformação Real</span>
+      <h2>Veja o poder de um projeto bem planejado</h2>
+      <p>Arraste o divisor central para comparar o espaço original antes da reforma com o living executado pela LopesArq.</p>
+    </div>
+    
+    <div class="ba-wrapper">
+      <div class="ba-container" id="baContainer">
+        <!-- Imagem DEPOIS: Living interno luxuoso e finalizado -->
+        <img class="ba-image" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85" alt="Living contemporâneo finalizado pela LopesArq" draggable="false">
+        
+        <!-- Imagem ANTES: Exatamente o mesmo cômodo interno em fase bruta/original -->
+        <div class="ba-before" id="baBefore">
+          <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80" alt="Espaço interno original antes da reforma" draggable="false">
+        </div>
+        
+        <!-- Badges posicionados diretamente no container: nunca empilham ou sofrem overflow -->
+        <span class="ba-badge before-label">Antes · Espaço Original</span>
+        <span class="ba-badge after-label">✓ Depois · Obra Concluída</span>
+        
+        <!-- Alça de arraste interativa -->
+        <div class="ba-handle" id="baHandle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/></svg>
+        </div>
+      </div>
+      
+      <!-- Metadados com quebras harmoniosas -->
+      <div class="ba-meta">
+        <span><strong>Residência Alphaville (480&nbsp;m²)</strong>: Integração completa de estar e jantar com ampliação de luz natural.</span>
+        <span style="color:var(--accent);font-weight:700;white-space:nowrap">Prazo: 8&nbsp;meses · Economia de 18%</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     CARROSSEL INTERATIVO DE PROJETOS (Tags fixas e instantâneas)
+     ======================================================== -->
+<section class="projects-section" id="projetos">
+  <div class="container">
+    <div class="carousel-header">
+      <div>
+        <span class="eyebrow gold">Portfólio Selecionado</span>
+        <h2>Projetos recentes & transformações reais</h2>
+        <p style="color:var(--ink-muted);margin-top:10px;font-size:1.05rem">Arraste para os lados ou clique em 'Ver detalhes' para abrir a ficha técnica do projeto.</p>
+      </div>
+      <div class="carousel-controls">
+        <button class="carousel-btn" id="prevSlide" aria-label="Projeto anterior">
+          <svg><use href="#i-chevron-left"/></svg>
+        </button>
+        <button class="carousel-btn" id="nextSlide" aria-label="Próximo projeto">
+          <svg><use href="#i-chevron-right"/></svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Container do Carrossel -->
+    <div class="carousel-container" id="carouselContainer">
+      <div class="carousel-track" id="carouselTrack">
+        
+        <!-- Projeto 1 -->
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <span class="project-tag">Residencial</span>
+            <span class="project-area">480 m²</span>
+            <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80" alt="Residência Bosque das Palmeiras">
+          </div>
+          <div class="project-info">
+            <h3>Residência Bosque das Palmeiras</h3>
+            <p>Integração de áreas sociais com piscina de borda infinita, iluminação zenital e uso harmônico de concreto aparente com painéis de cumaru.</p>
+            <div class="project-footer-row">
+              <div class="project-specs">
+                <span><svg><use href="#i-check"/></svg> 8 meses</span>
+                <span><svg><use href="#i-compass"/></svg> Arquitetura & Interiores</span>
+              </div>
+              <button class="btn-view-project" onclick="openProjectModal(0)">Ver detalhes →</button>
+            </div>
+          </div>
+        </article>
+        
+        <!-- Projeto 2 -->
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <span class="project-tag">Interiores</span>
+            <span class="project-area">210 m²</span>
+            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" alt="Apartamento Jardins">
+          </div>
+          <div class="project-info">
+            <h3>Apartamento Jardins</h3>
+            <p>Retrofit completo com integração de living, varanda e cozinha gourmet. Marcenaria sob medida em carvalho americano e iluminação cênica.</p>
+            <div class="project-footer-row">
+              <div class="project-specs">
+                <span><svg><use href="#i-check"/></svg> 4 meses</span>
+                <span><svg><use href="#i-compass"/></svg> Reforma & Marcenaria</span>
+              </div>
+              <button class="btn-view-project" onclick="openProjectModal(1)">Ver detalhes →</button>
+            </div>
+          </div>
+        </article>
+        
+        <!-- Projeto 3 -->
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <span class="project-tag">Residencial</span>
+            <span class="project-area">390 m²</span>
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=900&q=80" alt="Casa Vista da Serra">
+          </div>
+          <div class="project-info">
+            <h3>Casa Vista da Serra</h3>
+            <p>Conceito aberto privilegiando ventilação cruzada e luz natural. Espaço pensado para convívio familiar, biofilia e sustentabilidade térmica.</p>
+            <div class="project-footer-row">
+              <div class="project-specs">
+                <span><svg><use href="#i-check"/></svg> No prazo</span>
+                <span><svg><use href="#i-compass"/></svg> Arquitetura & Paisagismo</span>
+              </div>
+              <button class="btn-view-project" onclick="openProjectModal(2)">Ver detalhes →</button>
+            </div>
+          </div>
+        </article>
+        
+        <!-- Projeto 4 -->
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <span class="project-tag">Corporativo</span>
+            <span class="project-area">185 m²</span>
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80" alt="Clínica Médica e Escritório">
+          </div>
+          <div class="project-info">
+            <h3>Clínica Integrada Pacaembu</h3>
+            <p>Ambientes projetados para unir acolhimento humanizado a rigorosos padrões técnicos e de acessibilidade da vigilância sanitária.</p>
+            <div class="project-footer-row">
+              <div class="project-specs">
+                <span><svg><use href="#i-check"/></svg> 100% aprovado</span>
+                <span><svg><use href="#i-compass"/></svg> Comercial & Consultórios</span>
+              </div>
+              <button class="btn-view-project" onclick="openProjectModal(3)">Ver detalhes →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Projeto 5 -->
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <span class="project-tag">Retrofit</span>
+            <span class="project-area">135 m²</span>
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80" alt="Loft Industrial Contemporâneo">
+          </div>
+          <div class="project-info">
+            <h3>Loft Contemporâneo Vila Madalena</h3>
+            <p>Estrutura metálica exposta, tijolos de demolição e soluções inteligentes de layout para home office integrado e área de estar convidativa.</p>
+            <div class="project-footer-row">
+              <div class="project-specs">
+                <span><svg><use href="#i-check"/></svg> -15% custos</span>
+                <span><svg><use href="#i-compass"/></svg> Design de Interiores</span>
+              </div>
+              <button class="btn-view-project" onclick="openProjectModal(4)">Ver detalhes →</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+    
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SEÇÃO 4: BENEFÍCIOS
+     ======================================================== -->
+<section class="section alt" id="beneficios">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Diferenciais LopesArq</span>
+      <h2>O que você ganha ao projetar com a gente</h2>
+      <p>Uma experiência tranquila onde cada decisão é respaldada por técnica, design e planejamento financeiro.</p>
+    </div>
+    
+    <div class="grid-3">
+      <article class="benefit-card">
+        <div class="icon"><svg><use href="#i-check"/></svg></div>
+        <h3>Custos previsíveis e planejados</h3>
+        <p>Detalhamos quantitativos e opções de materiais antes do início para eliminar os temidos aditivos surpresa.</p>
+      </article>
+      
+      <article class="benefit-card">
+        <div class="icon"><svg><use href="#i-check"/></svg></div>
+        <h3>Espaços funcionais de verdade</h3>
+        <p>Beleza aliada à ergonomia: cada tomada, ponto de luz e circulação é planejado para o seu dia a dia.</p>
+      </article>
+      
+      <article class="benefit-card">
+        <div class="icon"><svg><use href="#i-check"/></svg></div>
+        <h3>Cronograma respeitado à risca</h3>
+        <p>Planejamento de etapas com prazos factíveis e acompanhamento sistemático para entrega pontual.</p>
+      </article>
+      
+      <article class="benefit-card">
+        <div class="icon"><svg><use href="#i-check"/></svg></div>
+        <h3>Comunicação clara e sem jargões</h3>
+        <p>Apresentações visuais compreensíveis e relatórios periódicos para você sempre saber o que está acontecendo.</p>
+      </article>
+      
+      <article class="benefit-card">
+        <div class="icon"><svg><use href="#i-check"/></svg></div>
+        <h3>Identidade autêntica e personalizada</h3>
+        <p>Projetamos para refletir a sua história e preferências pessoais, nunca réplicas prontas de catálogos.</p>
+      </article>
+      
+      <article class="benefit-card">
+        <div class="icon"><svg><use href="#i-check"/></svg></div>
+        <h3>Obra 100% fiel ao projeto aprovado</h3>
+        <p>Supervisão técnica rigorosa para garantir que a construtora execute exatamente o que você aprovou.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     RECURSO INTERATIVO 2: SIMULADOR VISUAL DE ETAPAS
+     ======================================================== -->
+<section class="simulator-section" id="simulador">
+  <div class="container">
+    <div class="section-head center" style="margin-bottom:34px">
+      <span class="eyebrow gold">Planejador Interativo</span>
+      <h2>Simule as etapas do seu projeto</h2>
+      <p>Selecione as características do seu espaço para visualizar o cronograma dinâmico de desenvolvimento e o escopo executivo.</p>
+    </div>
+    
+    <div class="simulator-card">
+      <div class="sim-controls">
+        <!-- Grupo 1: Tipo com Ícones Visuais -->
+        <div class="sim-group">
+          <label>1. Tipo de espaço:</label>
+          <div class="sim-options" id="simTypeOptions">
+            <button class="sim-pill active" data-type="Residencial (Casa)">
+              <svg><use href="#i-home"/></svg>
+              <span>Casa / Sobrado</span>
+            </button>
+            <button class="sim-pill" data-type="Apartamento">
+              <svg><use href="#i-building"/></svg>
+              <span>Apartamento</span>
+            </button>
+            <button class="sim-pill" data-type="Comercial / Clínica">
+              <svg><use href="#i-clinic"/></svg>
+              <span>Comercial / Clínica</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Grupo 2: Escopo -->
+        <div class="sim-group">
+          <label>2. Escopo pretendido:</label>
+          <div class="sim-options" id="simScopeOptions">
+            <button class="sim-pill active" data-scope="Reforma Completa">Reforma Completa</button>
+            <button class="sim-pill" data-scope="Projeto do Zero">Construção do Zero</button>
+            <button class="sim-pill" data-scope="Design de Interiores">Design de Interiores</button>
+          </div>
+        </div>
+        
+        <!-- Grupo 3: Metragem com Slider e Marcadores -->
+        <div class="sim-group range-wrap">
+          <div class="range-header">
+            <label style="margin:0">3. Metragem aproximada:</label>
+            <span class="val" id="areaValueDisplay">240 m²</span>
+          </div>
+          <input type="range" class="sim-range" id="simAreaRange" min="50" max="600" step="10" value="240">
+          <div class="range-marks">
+            <span>50 m²</span>
+            <span>200 m²</span>
+            <span>400 m²</span>
+            <span>600 m²</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Painel Visual de Fases e Entregáveis -->
+      <div class="sim-result">
+        <div class="sim-result-head">
+          <span>Cronograma & Estimativa Técnica</span>
+          <h4 id="simResultTitle">Casa · 240 m² (Reforma Completa)</h4>
+        </div>
+        
+        <!-- Gráficos de Fases em Linha do Tempo -->
+        <div class="sim-phase-bars">
+          <div class="sim-phase-item">
+            <div class="sim-phase-label">
+              <span>Fase 1: Briefing & Estudo 3D</span>
+              <span id="timePhase1">~2 a 3 semanas</span>
+            </div>
+            <div class="sim-progress-track"><div class="sim-progress-fill" style="width:35%"></div></div>
+          </div>
+          <div class="sim-phase-item">
+            <div class="sim-phase-label">
+              <span>Fase 2: Projeto Executivo & Detalhamento</span>
+              <span id="timePhase2">~3 a 4 semanas</span>
+            </div>
+            <div class="sim-progress-track"><div class="sim-progress-fill gold" style="width:45%"></div></div>
+          </div>
+          <div class="sim-phase-item">
+            <div class="sim-phase-label">
+              <span>Fase 3: Compatibilização & RRT</span>
+              <span id="timePhase3">~1 a 2 semanas</span>
+            </div>
+            <div class="sim-progress-track"><div class="sim-progress-fill" style="width:20%"></div></div>
+          </div>
+        </div>
+        
+        <ul class="sim-checklist">
+          <li><svg><use href="#i-check"/></svg> <span>Tempo total estimado: <strong id="totalTimeEstimate">~7 a 9 semanas</strong></span></li>
+          <li><svg><use href="#i-check"/></svg> <span>Maquetes 3D fotorrealistas de cada cômodo</span></li>
+          <li><svg><use href="#i-check"/></svg> <span>Caderno executivo completo de iluminação e marcenaria</span></li>
+        </ul>
+        
+        <div style="margin-top:6px">
+          <!-- Botão seguro que rola suavemente para o formulário/CTA, sem redirecionamento externo -->
+          <a class="btn btn-primary" href="#cta" style="width:100%">
+            
+            <span id="simBtnLabel">Conversar sobre este projeto</span>
+            <svg class="icon-arrow"><use href="#i-arrow-right"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SEÇÃO 5: PROVA SOCIAL & DEPOIMENTOS
+     ======================================================== -->
+<section class="section white" id="prova-social">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Casos Reais</span>
+      <h2>Quem confiou no nosso trabalho e transformou sua vida</h2>
+      <p>Histórias de clientes que conquistaram seus espaços com segurança e tranquilidade.</p>
+    </div>
+    
+    <!-- Contadores Animados -->
+    <div class="stats-banner" id="statsBanner">
+      <div class="stat">
+        <span class="stat-number" data-target="140">+0</span>
+        <span class="stat-label">Projetos residenciais e comerciais</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" data-target="9">0</span>
+        <span class="stat-label">Anos de atuação no mercado</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" data-target="4.9" data-decimal="1">0.0</span>
+        <span class="stat-label">Nota média no Google Reviews</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" data-target="35">0</span>
+        <span class="stat-label">Mil m² projetados e executados</span>
+      </div>
+    </div>
+    
+    <!-- 3 Depoimentos Completos -->
+    <div class="grid-3">
+      <article class="quote-card">
+        <div class="quote-stars">
+          <svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg>
+        </div>
+        <blockquote>
+          “Estávamos apavorados com histórias de amigos com obras que estouraram o orçamento em 50%. A LopesArq entregou um projeto tão cirúrgico que a construtora seguiu à risca, sem nenhum aditivo surpresa. O resultado superou nosso sonho!”
+        </blockquote>
+        <div class="result-badge">
+          ✓ Obra entregue 2 semanas antes do prazo
+        </div>
+        <div class="person">
+          <img class="person-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80" alt="Camila Guimarães">
+          <div>
+            <b>Camila & Rafael Guimarães</b>
+            <span>Reforma Casa Jardim Paulistano (280m²)</span>
+          </div>
+        </div>
+      </article>
+      
+      <article class="quote-card">
+        <div class="quote-stars">
+          <svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg>
+        </div>
+        <blockquote>
+          “Precisávamos de um espaço de atendimento sofisticado, acolhedor e ao mesmo tempo 100% alinhado às normas da Vigilância Sanitária. A equipe uniu beleza e fluxo funcional com maestria. Nossos pacientes elogiam o ambiente todos os dias.”
+        </blockquote>
+        <div class="result-badge">
+          ✓ Alvará sanitário aprovado de primeira
+        </div>
+        <div class="person">
+          <img class="person-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80" alt="Dr. Marcelo Silveira">
+          <div>
+            <b>Dr. Marcelo Silveira</b>
+            <span>Clínica Dermatológica (185m²)</span>
+          </div>
+        </div>
+      </article>
+      
+      <article class="quote-card">
+        <div class="quote-stars">
+          <svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg>
+        </div>
+        <blockquote>
+          “A integração do living com a varanda gourmet mudou completamente a rotina da nossa família nos fins de semana. Cada centímetro de marcenaria e cada ponto de luz foram pensados com propósito. Valeu cada centavo investido.”
+        </blockquote>
+        <div class="result-badge">
+          ✓ Valorização de 26% no valor do imóvel
+        </div>
+        <div class="person">
+          <img class="person-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&h=200&q=80" alt="Mariana Toledo">
+          <div>
+            <b>Mariana & Carlos Toledo</b>
+            <span>Apartamento Vila Nova Conceição (160m²)</span>
+          </div>
+        </div>
+      </article>
+    </div>
+    
+    <div class="partners-row" aria-label="Parceiros e referências">
+      <div class="partners-track">
+        <div class="partner-logo">CAU/BR</div>
+        <div class="partner-logo">DECA</div>
+        <div class="partner-logo">PORTOBELLO</div>
+        <div class="partner-logo">HUNTER DOUGLAS</div>
+        <div class="partner-logo">CASACOR</div>
+        <!-- repetição só para o loop contínuo no celular (escondida no desktop) -->
+        <div class="partner-logo dup" aria-hidden="true">CAU/BR</div>
+        <div class="partner-logo dup" aria-hidden="true">DECA</div>
+        <div class="partner-logo dup" aria-hidden="true">PORTOBELLO</div>
+        <div class="partner-logo dup" aria-hidden="true">HUNTER DOUGLAS</div>
+        <div class="partner-logo dup" aria-hidden="true">CASACOR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SEÇÃO 6: PERGUNTAS FREQUENTES
+     ======================================================== -->
+<section class="section alt" id="faq">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Tire Suas Dúvidas</span>
+      <h2>Perguntas frequentes</h2>
+      <p>Respostas objetivas sobre prazos, custos, metodologia e como podemos iniciar o seu projeto.</p>
+    </div>
+    
+    <div class="faq" id="faqAccordion">
+      
+      <div class="faq-item active">
+        <button class="faq-trigger" aria-expanded="true">
+          <span>Quanto tempo leva do briefing à entrega do projeto executivo?</span>
+          <div class="faq-icon"><svg><use href="#i-chevron-down"/></svg></div>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner">
+            <p>Em média, um projeto residencial ou comercial completo (estudo preliminar, anteprojeto 3D, compatibilização técnica e pranchas executivas) leva de <strong>6 a 10 semanas</strong>, dependendo da metragem e complexidade. Definimos um cronograma com datas prévias de cada reunião de validação já no contrato inicial, garantindo total previsibilidade para você planejar a contratação da construtora.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <button class="faq-trigger" aria-expanded="false">
+          <span>Quanto custa um projeto de arquitetura e como o valor é calculado?</span>
+          <div class="faq-icon"><svg><use href="#i-chevron-down"/></svg></div>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner">
+            <p>O investimento é calculado com base na metragem quadrada, complexidade estrutural e escopo contratado (apenas projeto de interiores, projeto arquitetônico completo ou com acompanhamento técnico presencial de obra). Na nossa primeira conversa sem compromisso, ouvimos seus objetivos e apresentamos uma estimativa orçamentária clara e transparente, sem surpresas futuras.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <button class="faq-trigger" aria-expanded="false">
+          <span>E se eu não gostar da primeira proposta estética apresentada?</span>
+          <div class="faq-icon"><svg><use href="#i-chevron-down"/></svg></div>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner">
+            <p>Nosso método elimina esse risco porque começamos com um briefing aprofundado e painéis de referências visuais aprovados por você antes de desenharmos a primeira linha. Além disso, nosso processo inclui rodadas de revisão planejadas, onde refinamos cores, materiais e layout 3D até que o projeto reflita 100% o seu estilo e identidade.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <button class="faq-trigger" aria-expanded="false">
+          <span>Vocês realizam o acompanhamento técnico e gestão da obra?</span>
+          <div class="faq-icon"><svg><use href="#i-chevron-down"/></svg></div>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner">
+            <p>Sim! Recomendamos fortemente a contratação do nosso acompanhamento técnico. Realizamos vistorias periódicas no canteiro, orientamos os mestres de obras e instaladores, conferimos alinhamentos de revestimentos e marcenaria e resolvemos qualquer eventual dúvida técnica para garantir que a execução seja impecável.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <button class="faq-trigger" aria-expanded="false">
+          <span>Atendem projetos comerciais e consultórios, ou apenas residências?</span>
+          <div class="faq-icon"><svg><use href="#i-chevron-down"/></svg></div>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner">
+            <p>Atendemos projetos residenciais de médio e alto padrão (casas térreas, sobrados e reformas de apartamentos) e também projetos corporativos e comerciais (escritórios corporativos, consultórios médicos, clínicas, estúdios e lojas), com foco na identidade da marca e normas técnicas específicas.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <button class="faq-trigger" aria-expanded="false">
+          <span>O que preciso ter em mãos para a primeira conversa?</span>
+          <div class="faq-icon"><svg><use href="#i-chevron-down"/></svg></div>
+        </button>
+        <div class="faq-content">
+          <div class="faq-inner">
+            <p>Apenas a vontade de transformar o seu espaço! Se já tiver a planta baixa da construtora, fotos do imóvel atual ou imagens de referências que você salvou no Pinterest ou Instagram, excelente. Caso não tenha, não se preocupe: conduzimos a conversa para mapear tudo o que é necessário.</p>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SEÇÃO 7: ÚLTIMO CTA (Sem logo no fundo, sem travessão, sem redirecionamento externo)
+     ======================================================== -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-panel">
+      <span class="cta-badge"><span>✦ Agenda aberta <span class="nw">para este trimestre</span></span></span>
+      <h2>Vamos desenhar o seu próximo espaço com exclusividade?</h2>
+      <p class="offer">Agende uma conversa preliminar de 30 minutos com nossos arquitetos titulares. Avaliaremos o seu imóvel e apresentaremos os primeiros caminhos para o seu projeto, sem custo e sem compromisso.</p>
+      
+      <div class="cta-actions">
+        <!-- Botão seguro: não redireciona para WhatsApp real em modo de teste/template -->
+        <a class="btn btn-sand" href="javascript:void(0)" onclick="alert('Template LopesArq: Este botão está configurado para direcionar ao WhatsApp da empresa no ambiente de produção.'); return false;">
+          
+          <span>Agendar conversa no WhatsApp</span>
+          <svg class="icon-arrow"><use href="#i-arrow-right"/></svg>
+        </a>
+        <a class="btn btn-secondary" href="mailto:contato@lopesarq.com.br">
+          
+          <span>Enviar mensagem por e-mail</span>
+        </a>
+      </div>
+      
+      <div class="cta-badges-bottom">
+        <span><svg><use href="#i-check"/></svg> Retorno ágil em até 24 horas úteis</span>
+        <span><svg><use href="#i-shield"/></svg> Sigilo e confidencialidade total</span>
+        <span><svg><use href="#i-star"/></svg><span>Atendimento <span class="nw">presencial (SP)</span> e <span class="nw">online (Brasil)</span></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ========================================================
+     RODAPÉ (Compactado, Informações Neutras e Seguras de Template)
+     ======================================================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Coluna 1: Marca & Resumo -->
+      <div class="footer-brand">
+        <a class="brand" href="#hero" aria-label="LopesArq">
+          <svg><use href="#mark"/></svg>
+          <span style="color:#ffffff">LOPES<b style="color:var(--sand)">ARQ</b></span>
+        </a>
+        <p>Arquitetura e interiores contemporâneos de alto padrão. Rigor estético, controle orçamentário e gestão técnica completa da obra.</p>
+        <p class="cau-info">Responsável Técnico: CAU/BR nº A000000-0</p>
+      </div>
+      
+      <!-- Coluna 2: Navegação Rápida -->
+      <div class="footer-col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#solucao">Como trabalhamos</a></li>
+          <li><a href="#projetos">Projetos selecionados</a></li>
+          <li><a href="#simulador">Planejador interativo</a></li>
+          <li><a href="#beneficios">Diferenciais</a></li>
+          <li><a href="#prova-social">Depoimentos reais</a></li>
+          <li><a href="#faq">Dúvidas frequentes</a></li>
+        </ul>
+      </div>
+      
+      <!-- Coluna 3: Atendimento Neutro de Template -->
+      <div class="footer-col">
+        <h4>Atendimento</h4>
+        <div class="contact-item">
+          <svg><use href="#i-home"/></svg>
+          <span>Rua Exemplo, 1000 · Sala 42 — Bairro, São Paulo - SP</span>
+        </div>
+        <div class="contact-item">
+          <svg><use href="#i-whatsapp"/></svg>
+          <span>(11) 99999-9999</span>
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>contato@lopesarq.com.br</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Barra Inferior -->
+    <div class="footer-bottom">
+      <div>© 2026 LopesArq Arquitetura · CNPJ 00.000.000/0001-00 · Todos os direitos reservados.</div>
+      <div class="footer-legal">
+        <a href="#">Privacidade</a>
+        <a href="#">Termos de Uso</a>
+        <a href="#hero">Voltar ao topo ↑</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Modal de Ficha Técnica -->
+<div class="modal-overlay" id="projectModal" onclick="closeProjectModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeProjectModal()" aria-label="Fechar">✕</button>
+    <div class="modal-grid">
+      <img id="modalImg" class="modal-img" src="" alt="">
+      <div class="modal-content">
+        <div class="modal-tags" id="modalTags"></div>
+        <h3 id="modalTitle">Título do Projeto</h3>
+        <p id="modalDesc">Descrição do projeto...</p>
+        <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
+          <a class="btn btn-primary" href="#cta" onclick="closeProjectModal()" style="width:100%">
+            
+            <span>Quero um projeto com esse padrão</span>
+            <svg class="icon-arrow"><use href="#i-arrow-right"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Botão Flutuante do WhatsApp (Apenas efeito visual / navega para o CTA seguro) -->
+<a href="#cta" class="floating-whatsapp" aria-label="Agendar conversa">
+  <svg><use href="#i-whatsapp"/></svg>
+</a>
+
+<!-- Barra CTA Sticky Mobile -->
+<div class="sticky-cta">
+  <a class="btn btn-primary" href="#cta">Agendar conversa com a equipe</a>
+</div>
+
+<!-- ========================================================
+     JAVASCRIPT: INTERATIVIDADE AVANÇADA
+     ======================================================== -->
+<script>
+// 1. ALTERNADOR HERO (Obra Entregue vs Conceito 3D com Pins Técnicos)
+const heroImages = {
+  real: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+  "3d": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
+};
+
+function switchHeroMode(mode) {
+  const img = document.getElementById('heroImage');
+  const btnReal = document.getElementById('btnModeReal');
+  const btn3D = document.getElementById('btnMode3D');
+  const showcase = document.getElementById('heroShowcase');
+  const statusLabel = document.getElementById('heroBadgeStatus');
+  const subLabel = document.getElementById('heroBadgeSub');
+  if (!img) return;
+  
+  img.style.opacity = '0.35';
+  
+  setTimeout(() => {
+    img.src = heroImages[mode];
+    img.style.opacity = '1';
+  }, 160);
+  
+  if (mode === 'real') {
+    btnReal.classList.add('active');
+    btn3D.classList.remove('active');
+    showcase.classList.remove('mode-3d-active');
+    if (statusLabel) statusLabel.textContent = "100% de Fidelidade";
+    if (subLabel) subLabel.textContent = "Orçamento & cronograma cumpridos";
+  } else {
+    btn3D.classList.add('active');
+    btnReal.classList.remove('active');
+    showcase.classList.add('mode-3d-active');
+    if (statusLabel) statusLabel.textContent = "📐 Maquete 3D Fotorrealista";
+    if (subLabel) subLabel.textContent = "Compatibilização técnica milimétrica";
+  }
+}
+
+// 2. HEADER SCROLL & BACKDROP
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  if (window.scrollY > 40) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});
+
+// 3. MENU MOBILE DRAWER (ícone vira X, painel desce com animação)
+const menuToggle = document.getElementById('menuToggle');
+const mobileDrawer = document.getElementById('mobileDrawer');
+if (menuToggle && mobileDrawer) {
+  const setMenu = (open) => {
+    mobileDrawer.classList.toggle('open', open);
+    menuToggle.setAttribute('aria-expanded', open);
+    menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  };
+  menuToggle.addEventListener('click', () => setMenu(!mobileDrawer.classList.contains('open')));
+  mobileDrawer.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('click', (e) => {
+    if (mobileDrawer.classList.contains('open') && !e.target.closest('#header')) setMenu(false);
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) setMenu(false); });
+}
+
+// 4. SLIDER INTERATIVO ANTES & DEPOIS (Sem bug de imagem fantasma e sem overflow de badges)
+(function initBeforeAfter() {
+  const container = document.getElementById('baContainer');
+  const beforeLayer = document.getElementById('baBefore');
+  const handle = document.getElementById('baHandle');
+  if (!container || !beforeLayer || !handle) return;
+  
+  let isDragging = false;
+  
+  /* a imagem "antes" tem sempre a mesma largura do container: as duas fotos ficam alinhadas em qualquer tela */
+  function syncWidth() { container.style.setProperty('--ba-w', container.clientWidth + 'px'); }
+  syncWidth();
+  window.addEventListener('resize', syncWidth);
+  window.addEventListener('load', syncWidth);
+  
+  function updateSlider(clientX) {
+    const rect = container.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const percent = (x / rect.width) * 100;
+    beforeLayer.style.width = percent + '%';
+    handle.style.left = percent + '%';
+  }
+  
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    updateSlider(e.clientX);
+    e.preventDefault(); // Previne o drag fantasma do navegador
+  });
+  
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    updateSlider(e.clientX);
+  });
+  
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+  
+  // Touch events para mobile
+  container.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    updateSlider(e.touches[0].clientX);
+  }, {passive:true});
+  
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    updateSlider(e.touches[0].clientX);
+  }, {passive:true});
+  
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+})();
+
+// 5. CARROSSEL DE PROJETOS
+(function initCarousel() {
+  const track = document.getElementById('carouselTrack');
+  const prevBtn = document.getElementById('prevSlide');
+  const nextBtn = document.getElementById('nextSlide');
+  const dotsContainer = document.getElementById('carouselDots');
+  const container = document.getElementById('carouselContainer');
+  
+  if (!track || !prevBtn || !nextBtn || !dotsContainer) return;
+  
+  const slides = track.querySelectorAll('.project-card');
+  const totalSlides = slides.length;
+  let currentIndex = 0;
+  let autoplayTimer = null;
+  
+  function getVisibleSlides() {
+    if (window.innerWidth <= 768) return 1;
+    if (window.innerWidth <= 1024) return 1.4;
+    return 2;
+  }
+  
+  const maxIndex = () => Math.max(0, Math.ceil(totalSlides - Math.floor(getVisibleSlides())));
+  
+  function buildDots() {
+    dotsContainer.innerHTML = '';
+    const dotsCount = maxIndex() + 1;
+    for (let i = 0; i < dotsCount; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (i === currentIndex) dot.classList.add('active');
+      dot.addEventListener('click', () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+  }
+  
+  function updateCarousel() {
+    const slide = slides[0];
+    if (!slide) return;
+    const slideWidth = slide.getBoundingClientRect().width;
+    const gap = 24;
+    const offset = currentIndex * (slideWidth + gap);
+    track.style.transform = `translateX(-${offset}px)`;
+    
+    const dots = dotsContainer.querySelectorAll('.dot');
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentIndex);
+    });
+  }
+  
+  function goToSlide(index) {
+    currentIndex = Math.max(0, Math.min(index, maxIndex()));
+    updateCarousel();
+    resetAutoplay();
+  }
+  
+  function nextSlide() {
+    if (currentIndex >= maxIndex()) currentIndex = 0;
+    else currentIndex++;
+    updateCarousel();
+  }
+  
+  function prevSlide() {
+    if (currentIndex <= 0) currentIndex = maxIndex();
+    else currentIndex--;
+    updateCarousel();
+  }
+  
+  nextBtn.addEventListener('click', () => { nextSlide(); resetAutoplay(); });
+  prevBtn.addEventListener('click', () => { prevSlide(); resetAutoplay(); });
+  
+  let touchStartX = 0;
+  let touchEndX = 0;
+  container.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+  container.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+      resetAutoplay();
+    }
+  }, {passive:true});
+  
+  function startAutoplay() { autoplayTimer = setInterval(nextSlide, 5500); }
+  function stopAutoplay() { if (autoplayTimer) clearInterval(autoplayTimer); }
+  function resetAutoplay() { stopAutoplay(); startAutoplay(); }
+  
+  container.addEventListener('mouseenter', stopAutoplay);
+  container.addEventListener('mouseleave', startAutoplay);
+  
+  window.addEventListener('resize', () => { buildDots(); updateCarousel(); });
+  buildDots();
+  updateCarousel();
+  startAutoplay();
+})();
+
+// 6. MODAL QUICKVIEW
+const projectDetails = [
+  {
+    title: "Residência Bosque das Palmeiras",
+    tag: "Residencial de Alto Padrão",
+    area: "480 m²",
+    time: "8 meses de obra",
+    desc: "Desenvolvido para uma família que buscava contato permanente com a natureza e conforto térmico. O projeto eliminou pilares no living através de uma viga protendida de concreto aparente, integrando a sala de estar diretamente à piscina e ao bosque particular.",
+    img: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    title: "Apartamento Jardins",
+    tag: "Reforma de Interiores & Retrofit",
+    area: "210 m²",
+    time: "4 meses de reforma",
+    desc: "Apartamento dos anos 80 completamente reimaginado para receber amigos. A cozinha foi integrada ao living por painéis de correr de madeira ripada e a iluminação pontual valoriza a coleção de arte contemporânea dos proprietários.",
+    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    title: "Casa Vista da Serra",
+    tag: "Arquitetura Sustentável & Paisagismo",
+    area: "390 m²",
+    time: "No prazo estipulado",
+    desc: "Projeto implantado em terreno com declive acentuado. Aproveitamos a topografia para criar níveis escalonados de convivência com ventilação cruzada permanente e reuso de água pluvial integrado ao paisagismo nativo.",
+    img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    title: "Clínica Integrada Pacaembu",
+    tag: "Comercial & Consultórios Médicos",
+    area: "185 m²",
+    time: "Alvará aprovado de primeira",
+    desc: "Espaço multidisciplinar de dermatologia que precisava transmitir acolhimento e máxima assepsia. Toda a circulação técnica e consultórios foram projetados em estrita conformidade com as exigências da Anvisa e Vigilância Sanitária.",
+    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    title: "Loft Contemporâneo Vila Madalena",
+    tag: "Retrofit & Marcenaria Personalizada",
+    area: "135 m²",
+    time: "Economia de 15% em materiais",
+    desc: "Antigo galpão adaptado para moradia e home office. Preservamos paredes originais em tijolo aparente e dutos de ar, contrapondo com piso em tecnocimento monolítico e marcenaria funcional que oculta os equipamentos eletrônicos.",
+    img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80"
+  }
+];
+
+function openProjectModal(index) {
+  const p = projectDetails[index];
+  if (!p) return;
+  document.getElementById('modalImg').src = p.img;
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalDesc').textContent = p.desc;
+  
+  const tagsWrap = document.getElementById('modalTags');
+  tagsWrap.innerHTML = `
+    <span class="modal-tag">${p.tag}</span>
+    <span class="modal-tag">${p.area}</span>
+    <span class="modal-tag">${p.time}</span>
+  `;
+  document.getElementById('projectModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProjectModal(e) {
+  if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) return;
+  document.getElementById('projectModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeProjectModal();
+});
+
+// 7. SIMULADOR DINÂMICO DE ETAPAS & CRONOGRAMA
+(function initSimulator() {
+  let selectedType = "Residencial (Casa)";
+  let selectedScope = "Reforma Completa";
+  let currentArea = 240;
+  
+  const typeBtns = document.querySelectorAll('#simTypeOptions .sim-pill');
+  const scopeBtns = document.querySelectorAll('#simScopeOptions .sim-pill');
+  const areaSlider = document.getElementById('simAreaRange');
+  const areaDisplay = document.getElementById('areaValueDisplay');
+  const resultTitle = document.getElementById('simResultTitle');
+  const simBtnLabel = document.getElementById('simBtnLabel');
+  
+  const timePhase1 = document.getElementById('timePhase1');
+  const timePhase2 = document.getElementById('timePhase2');
+  const timePhase3 = document.getElementById('timePhase3');
+  const totalTimeEstimate = document.getElementById('totalTimeEstimate');
+  
+  function updateSimulation() {
+    areaDisplay.textContent = currentArea + '\u00a0m²';
+    resultTitle.textContent = `${selectedType} · ${currentArea}\u00a0m² (${selectedScope})`;
+    
+    // Cálculo dinâmico do tempo baseado na metragem e escopo
+    let p1 = 2, p2 = 3, p3 = 1;
+    if (currentArea > 350) {
+      p1 = 3; p2 = 5; p3 = 2;
+    } else if (currentArea > 200) {
+      p1 = 3; p2 = 4; p3 = 2;
+    }
+    
+    if (selectedScope === "Projeto do Zero") {
+      p2 += 1;
+    }
+    
+    const minWeeks = p1 + p2 + p3 - 1;
+    const maxWeeks = p1 + p2 + p3 + 1;
+    
+    if (timePhase1) timePhase1.textContent = `~${p1} a ${p1 + 1} semanas`;
+    if (timePhase2) timePhase2.textContent = `~${p2} a ${p2 + 1} semanas`;
+    if (timePhase3) timePhase3.textContent = `~${p3} a ${p3 + 1} semanas`;
+    if (totalTimeEstimate) totalTimeEstimate.textContent = `~${minWeeks} a ${maxWeeks} semanas`;
+    if (simBtnLabel) simBtnLabel.textContent = `Conversar sobre ${currentArea}\u00a0m²`;
+  }
+  
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedType = btn.getAttribute('data-type');
+      updateSimulation();
+    });
+  });
+  
+  scopeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      scopeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedScope = btn.getAttribute('data-scope');
+      updateSimulation();
+    });
+  });
+  
+  if (areaSlider) {
+    areaSlider.addEventListener('input', (e) => {
+      currentArea = parseInt(e.target.value, 10);
+      updateSimulation();
+    });
+  }
+  
+  updateSimulation();
+})();
+
+// 8. ACORDEÃO DE FAQ FLUIDO
+(function initFaq() {
+  const faqItems = document.querySelectorAll('#faqAccordion .faq-item');
+  faqItems.forEach(item => {
+    const trigger = item.querySelector('.faq-trigger');
+    if (!trigger) return;
+    trigger.addEventListener('click', () => {
+      const isAlreadyActive = item.classList.contains('active');
+      faqItems.forEach(otherItem => {
+        otherItem.classList.remove('active');
+        const otherTrigger = otherItem.querySelector('.faq-trigger');
+        if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+      });
+      if (!isAlreadyActive) {
+        item.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+})();
+
+// 9. CONTADORES NUMÉRICOS ANIMADOS
+(function initCounters() {
+  const statsSection = document.getElementById('statsBanner');
+  if (!statsSection) return;
+  let animated = false;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !animated) {
+        animated = true;
+        animateNumbers();
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(statsSection);
+  function animateNumbers() {
+    const numbers = statsSection.querySelectorAll('.stat-number');
+    numbers.forEach(el => {
+      const target = parseFloat(el.getAttribute('data-target'));
+      const isDecimal = el.getAttribute('data-decimal') === '1';
+      const duration = 1600;
+      const startTime = performance.now();
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const currentVal = target * ease;
+        if (isDecimal) {
+          el.textContent = currentVal.toFixed(1);
+        } else if (target === 140) {
+          el.textContent = '+' + Math.floor(currentVal);
+        } else {
+          el.textContent = Math.floor(currentVal);
+        }
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          if (isDecimal) el.textContent = target.toFixed(1);
+          else if (target === 140) el.textContent = '+' + target;
+          else el.textContent = target;
+        }
+      }
+      requestAnimationFrame(update);
+    });
+  }
+})();
+
+// 10. SCROLLSPY DO MENU
+(function initScrollSpy() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav a.link');
+  window.addEventListener('scroll', () => {
+    let currentId = '';
+    const scrollPos = window.scrollY + 120;
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollPos >= top && scrollPos < top + height) {
+        currentId = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + currentId) {
+        link.classList.add('active');
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
