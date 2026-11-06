@@ -14,7 +14,7 @@
 .cal-c{width:100%;max-width:100%;box-sizing:border-box}
 .cal-mh{position:relative;display:flex;width:100%;box-sizing:border-box;align-items:center;justify-content:space-between;margin-bottom:10px}
 .cal-mh b{font-weight:500;color:var(--ink)}
-.cal-navs{position:absolute;right:calc((100% - 24px)/14 - 15px);top:0;display:flex;flex:0 0 auto;gap:4px;margin:0;padding:0}
+.cal-navs{position:absolute;right:calc((100% - 24px)/14 - 15px);top:-4px;display:flex;flex:0 0 auto;gap:4px;margin:0;padding:0}
 .cal-nav,.cal-back{width:30px;height:30px;display:grid;place-items:center;flex:0 0 30px;box-sizing:border-box;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:var(--r);padding:0;cursor:pointer;font:inherit;font-size:15px;line-height:1}
 .cal-nav:hover:not(:disabled),.cal-back:hover{border-color:var(--ink)}
 .cal-nav:disabled{opacity:.3;cursor:not-allowed}
@@ -66,6 +66,12 @@
 .cal-guest-tags{display:flex;flex-wrap:wrap;gap:5px}
 .cal-guest-tag{border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);padding:5px 9px;font:inherit;font-size:11px;cursor:pointer}
 .cal-guest-tag:hover{border-color:var(--acc);color:var(--acc)}
+.cal-reschedule-offer{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:var(--r);background:var(--card);color:var(--ink)}
+.cal-reschedule-offer p{margin:0;color:var(--mut);font-size:13px;line-height:1.5}
+.cal-reschedule-offer .btn{width:100%}
+.cal-keep-booking{justify-self:start;border:0;background:transparent;color:var(--mut);padding:4px 0;font:inherit;font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cal-keep-booking:hover{color:var(--ink)}
+.cal-keep-booking:disabled{opacity:.5;cursor:wait}
 .cal-event-state{display:grid;gap:4px;align-content:start}
 .cal-f .btn{justify-content:center;cursor:pointer}
 .cal-f .btn:disabled{opacity:.6;cursor:wait}
