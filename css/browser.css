@@ -1,0 +1,67 @@
+/* ===== Páginas de projeto: bloco "navegador" (.bw) =====
+   Mostra uma landing page (arquivo HTML) rodando dentro de uma janelinha de navegador, com botões Desktop / Mobile.
+   Tudo é montado por js/browser.js a partir dos parâmetros (data-*) do <section class="bw">. Aqui só o visual.
+   O visual usa as variáveis do site (--bg, --ink, --line, --card, --acc, --r, --mono), então segue o tema claro/escuro.
+   AJUSTES RÁPIDOS: espaçamento entre o bloco e o resto = margin de .bw (logo abaixo). Altura/largura das telas: parâmetros no HTML. */
+.bw{margin:20px 0;position:relative}
+/* mesmo respiro de 20px usado na galeria: não soma com o do bloco horizontal (.hs), que já tem 20px de padding interno */
+.hs+.bw{margin-top:0}
+.bw+.hs{margin-top:-20px}
+
+/* janela (mesmo desenho do bloco de agenda do site: borda de tinta, canto de 3px) */
+.bw-win{background:var(--card);border:1px solid var(--ink);border-radius:var(--r);overflow:hidden}
+
+/* barra superior */
+.bw-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--mut);background:var(--card)}
+.bw-dots{display:flex;gap:6px;flex:none}
+.bw-dots i{display:block;width:8px;height:8px;background:var(--line)}
+.bw-dots i:first-child{background:var(--acc)}
+.bw-url{flex:1;min-width:0;max-width:520px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);color:var(--ink);text-transform:none;letter-spacing:.02em;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bw-url svg{flex:none;color:var(--mut)}
+.bw-url span{overflow:hidden;text-overflow:ellipsis}
+.bw-sw{display:flex;flex:none}
+.bw-sw button{font:inherit;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:1;padding:7px 11px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;border-radius:0}
+.bw-sw button:first-child{border-radius:var(--r) 0 0 var(--r)}
+.bw-sw button:last-child{border-radius:0 var(--r) var(--r) 0;margin-left:-1px}
+.bw-sw button svg{flex:none}
+.bw-sw button[aria-pressed="true"]{background:var(--bt);color:var(--btx)}
+.bw-sw button:not([aria-pressed="true"]):hover{border-color:var(--acc);color:var(--acc);position:relative;z-index:1}
+.bw-sw button:focus-visible,.bw-cover:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* área da tela */
+.bw-stage{position:relative;display:flex;justify-content:center;background:var(--bg)}
+.bw[data-mode="mobile"] .bw-stage{padding:28px 16px;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:14px 14px}
+.bw-win.is-hand .bw-stage{padding:0;background-image:none}   /* celular de verdade: a tela ocupa a largura toda */
+.bw-view{position:relative;flex:none;overflow:hidden;background:#fff;transition:opacity .16s}
+.bw[data-mode="mobile"] .bw-view{border:1px solid var(--ink);box-shadow:0 20px 40px rgba(0,0,0,.18)}
+.bw-win.is-hand .bw-view{border:0;box-shadow:none}
+.bw-view.sw{opacity:0}
+.bw-view iframe{position:absolute;left:0;top:0;border:0;display:block;background:#fff;transform-origin:0 0}
+.bw-load{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut);background:var(--card);pointer-events:none;transition:opacity .3s}
+.bw-view.ok .bw-load{opacity:0}
+
+/* camada que evita "prender" a rolagem da página dentro da landing: clique para interagir */
+.bw-cover{position:absolute;inset:0;z-index:2;border:0;padding:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bw-hint{position:absolute;left:50%;bottom:16px;translate:-50% 6px;background:var(--dk);color:#fff;padding:8px 12px;border-radius:2px;white-space:nowrap;opacity:0;transition:opacity .2s,translate .25s;pointer-events:none}
+.bw-hint .t{display:none}
+.bw-cover:hover .bw-hint,.bw-cover:focus-visible .bw-hint{opacity:1;translate:-50% 0}
+@media (hover:none),(pointer:coarse){.bw-hint{opacity:1;translate:-50% 0;bottom:auto;top:14px}.bw-hint .f{display:none}.bw-hint .t{display:inline}}
+.bw.is-live .bw-cover{display:none}
+/* aviso ao ver a versão desktop em celular/tablet: tela escurecida e desfocada, com recado; "toque para interagir" continua por cima */
+.bw-warn{display:none;position:absolute;inset:0;z-index:1;place-items:center;padding:24px;text-align:center;background:rgba(10,10,10,.62);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);pointer-events:none}
+.bw-warn p{margin:0;max-width:300px;color:#fff;line-height:1.6;font-size:12px}
+.bw.is-warn:not(.is-live) .bw-warn{display:grid}
+/* botão de sair (aparece só enquanto a landing está "ao vivo" no toque) */
+.bw-x{display:none;position:absolute;right:10px;bottom:10px;z-index:3;font:inherit;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:1;padding:9px 12px;border:1px solid rgba(255,255,255,.4);background:rgba(10,10,10,.78);color:#fff;border-radius:2px;cursor:pointer}
+@media (hover:none),(pointer:coarse){.bw.is-live .bw-x{display:block}}
+
+/* celular: janela de ponta a ponta, como as galerias */
+@media(max-width:700px){
+  .bw{margin-left:-28px;margin-right:-28px}
+  .bw-win{border-left:0;border-right:0;border-radius:0}
+  .bw-bar{padding:10px 28px;gap:10px}
+  .bw-dots{display:none}
+  .bw-url{margin:0}
+}
+@media(max-width:480px){.bw-sw button span{display:none}.bw-sw button{padding:7px 10px}}
+@media(prefers-reduced-motion:reduce){.bw-view,.bw-load,.bw-hint{transition:none}}
